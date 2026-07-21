@@ -820,7 +820,6 @@ struct SwitcherSettings: View {
     @AppStorage(DefaultsKey.switcherMergeTabs) private var switcherMergeTabs = false
     @AppStorage(DefaultsKey.switcherShowWindowlessFinder) private var switcherShowWindowlessFinder = true
     @AppStorage(DefaultsKey.switcherMinimizedPlacement) private var switcherMinimizedPlacement = WindowSwitchMinimizedPlacement.normal.rawValue
-    @AppStorage(DefaultsKey.switcherShowMaximizedWindows) private var switcherShowMaximizedWindows = true
     @AppStorage(DefaultsKey.switcherShowFullscreenWindows) private var switcherShowFullscreenWindows = true
     @AppStorage(DefaultsKey.dockPreviewEnabled) private var dockPreviewEnabled = false
     @AppStorage(DefaultsKey.dockClickMinimize) private var dockClickMinimize = false
@@ -892,12 +891,6 @@ struct SwitcherSettings: View {
                     .onChange(of: switcherMinimizedPlacement) { _, _ in
                         AppSwitcher.shared.syncWithPreferences()
                     }
-
-                    Toggle("Show maximized windows", isOn: $switcherShowMaximizedWindows)
-                        .disabled(!switcherEnabled)
-                        .onChange(of: switcherShowMaximizedWindows) { _, _ in
-                            AppSwitcher.shared.syncWithPreferences()
-                        }
 
                     Toggle("Show fullscreen windows", isOn: $switcherShowFullscreenWindows)
                         .disabled(!switcherEnabled)

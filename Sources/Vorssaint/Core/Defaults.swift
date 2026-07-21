@@ -45,7 +45,6 @@ enum DefaultsKey {
     static let switcherMergeTabs = "switcherMergeTabs"     // show one switcher entry per app (collapse all of an app's windows)
     static let switcherShowWindowlessFinder = "switcherShowWindowlessFinder"
     static let switcherMinimizedPlacement = "switcherMinimizedPlacement"
-    static let switcherShowMaximizedWindows = "switcherShowMaximizedWindows"
     static let switcherShowFullscreenWindows = "switcherShowFullscreenWindows"
     static let dockPreviewEnabled = "dockPreviewEnabled"
     static let dockClickMinimize = "dockClickMinimize"    // click the active app's Dock icon to minimize its windows
@@ -552,7 +551,6 @@ enum Defaults {
         DefaultsKey.switcherMergeTabs: false,
         DefaultsKey.switcherShowWindowlessFinder: true,
         DefaultsKey.switcherMinimizedPlacement: WindowSwitchMinimizedPlacement.normal.rawValue,
-        DefaultsKey.switcherShowMaximizedWindows: true,
         DefaultsKey.switcherShowFullscreenWindows: true,
         DefaultsKey.dockPreviewEnabled: false,
         DefaultsKey.dockClickMinimize: false,

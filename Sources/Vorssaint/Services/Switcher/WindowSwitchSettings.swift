@@ -15,7 +15,6 @@ enum WindowSwitchSortMode: String, CaseIterable {
 
 struct WindowSwitchSettings {
     var minimizedPlacement: WindowSwitchMinimizedPlacement = .normal
-    var showMaximizedWindows = true
     var showFullscreenWindows = true
     var sortMode: WindowSwitchSortMode = .activationMRU
 
@@ -24,7 +23,6 @@ struct WindowSwitchSettings {
             minimizedPlacement: WindowSwitchMinimizedPlacement(
                 rawValue: defaults.string(forKey: DefaultsKey.switcherMinimizedPlacement) ?? ""
             ) ?? .normal,
-            showMaximizedWindows: defaults.object(forKey: DefaultsKey.switcherShowMaximizedWindows) as? Bool ?? true,
             showFullscreenWindows: defaults.object(forKey: DefaultsKey.switcherShowFullscreenWindows) as? Bool ?? true,
             sortMode: .activationMRU
         )

@@ -1089,8 +1089,6 @@ struct MetricsTests {
         expect(registeredDefaults[DefaultsKey.switcherMinimizedPlacement] as? String
                == WindowSwitchMinimizedPlacement.normal.rawValue,
                "App Switcher keeps minimized windows in normal ordering by default")
-        expect(registeredDefaults[DefaultsKey.switcherShowMaximizedWindows] as? Bool == true,
-               "App Switcher shows maximized windows by default")
         expect(registeredDefaults[DefaultsKey.switcherShowFullscreenWindows] as? Bool == true,
                "App Switcher shows fullscreen windows by default")
         let windowSwitchSuite = "vorss.tests.switcher.settings"
@@ -1098,16 +1096,13 @@ struct MetricsTests {
             switcherDefaults.removePersistentDomain(forName: windowSwitchSuite)
             let defaultSwitcherSettings = WindowSwitchSettings.load(from: switcherDefaults)
             expect(defaultSwitcherSettings.minimizedPlacement == .normal
-                   && defaultSwitcherSettings.showMaximizedWindows
                    && defaultSwitcherSettings.showFullscreenWindows,
                    "App Switcher settings load backward-compatible defaults for existing installs")
             switcherDefaults.set(WindowSwitchMinimizedPlacement.end.rawValue,
                                  forKey: DefaultsKey.switcherMinimizedPlacement)
-            switcherDefaults.set(false, forKey: DefaultsKey.switcherShowMaximizedWindows)
             switcherDefaults.set(false, forKey: DefaultsKey.switcherShowFullscreenWindows)
             let persistedSwitcherSettings = WindowSwitchSettings.load(from: switcherDefaults)
             expect(persistedSwitcherSettings.minimizedPlacement == .end
-                   && !persistedSwitcherSettings.showMaximizedWindows
                    && !persistedSwitcherSettings.showFullscreenWindows,
                    "App Switcher settings load persisted sorting and visibility choices")
             switcherDefaults.removePersistentDomain(forName: windowSwitchSuite)
@@ -1271,9 +1266,8 @@ struct MetricsTests {
         expect(sortIDs(WindowSwitchCandidatePipeline.filter(
             switchPipelineItems,
             settings: WindowSwitchSettings(minimizedPlacement: .normal,
-                                           showMaximizedWindows: false,
-                                           showFullscreenWindows: false))) == [201, 202, 205],
-               "App Switcher filter stage applies fullscreen and maximized visibility toggles")
+                                           showFullscreenWindows: false))) == [201, 202, 204, 205],
+               "App Switcher filter stage applies fullscreen visibility toggle")
         expect(sortIDs(WindowSwitchCandidatePipeline.filter(
             switchPipelineItems,
             settings: WindowSwitchSettings(minimizedPlacement: .hidden))) == [201, 203, 204, 205],

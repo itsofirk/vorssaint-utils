@@ -184,17 +184,16 @@ enum WindowEnumerator {
         }
         // collect -> filter
         var filtered = WindowSwitchCandidatePipeline.filter(windows, settings: switchSettings)
-        // keep app collapsing behavior after filtering so hidden states do not
-        // remove an app that still has another eligible window.
-        if groupByApp {
-            filtered = groupWindowsByApp(filtered)
-        }
-        // partition -> sort -> merge
+        // partition -> sort (before grouping so minimized state is preserved per-window)
         let partitioned = WindowSwitchCandidatePipeline.partition(filtered, settings: switchSettings)
         let tracker = AppActivationTracker.shared
         let sortedPrimary = WindowSwitchCandidatePipeline.sort(partitioned.primary) { tracker.rank(of: $0) }
         let sortedDeferred = WindowSwitchCandidatePipeline.sort(partitioned.deferred) { tracker.rank(of: $0) }
-        let ordered = WindowSwitchCandidatePipeline.merge(primary: sortedPrimary, deferred: sortedDeferred)
+        // group by app after partitioning so hidden states do not remove an app
+        // that still has another eligible window
+        var primary = groupByApp ? groupWindowsByApp(sortedPrimary) : sortedPrimary
+        var deferred = groupByApp ? groupWindowsByApp(sortedDeferred) : sortedDeferred
+        let ordered = WindowSwitchCandidatePipeline.merge(primary: primary, deferred: deferred)
         guard ordered.count > maximumCount else { return ordered }
         var trimmed = Array(ordered.prefix(maximumCount))
         // The windowless Finder tile is an explicit user choice; it must not

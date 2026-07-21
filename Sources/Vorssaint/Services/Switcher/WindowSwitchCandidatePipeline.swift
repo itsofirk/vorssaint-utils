@@ -12,7 +12,6 @@ enum WindowSwitchCandidatePipeline {
     static func filter(_ items: [SwitcherItem], settings: WindowSwitchSettings) -> [SwitcherItem] {
         items.filter { item in
             if settings.minimizedPlacement == .hidden, item.isMinimized { return false }
-            if !settings.showMaximizedWindows, item.isMaximized { return false }
             if !settings.showFullscreenWindows, item.isFullscreen { return false }
             return true
         }
