@@ -113,10 +113,12 @@ final class MouseNavigationService: ObservableObject {
             // Apps that consume the side buttons themselves keep the raw
             // event; replacing it would drop navigation the user already had,
             // and none of them has a menu command the AX path could press.
-            // Checked only on Down (never per Drag) and resolved from
-            // NSWorkspace's cached state, so the tap callback stays cheap.
+            // The same goes for an app the user put on the exception list.
+            // Checked only on Down (never per Drag), and both answers come
+            // from cached state, so the tap callback stays cheap.
             if MouseNavigationSupport.shouldPassThrough(
-                bundleIdentifier: NSWorkspace.shared.frontmostApplication?.bundleIdentifier) {
+                bundleIdentifier: NSWorkspace.shared.frontmostApplication?.bundleIdentifier)
+                || MouseAppExceptions.shared.excludesActionTarget(.navigation, at: event.location) {
                 passThroughButtons.insert(buttonNumber)
                 return Unmanaged.passUnretained(event)
             }

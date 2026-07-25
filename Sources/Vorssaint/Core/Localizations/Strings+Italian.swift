@@ -879,6 +879,7 @@ extension Strings {
         highlightsTitle: "Novità di questo aggiornamento",
         highlightsCaptionDockPreview: "Dock Preview ora funziona con l'ingrandimento del Dock attivo",
         highlightsCaptionScreenshot: "Lo screenshot ha guadagnato una lente dei pixel e la lettura dei codici QR",
+        highlightsCaptionSnippetLibrary: "Un menu di snippet con ricerca digita qualsiasi snippet al cursore",
         highlightsConfigure: "Configura",
         highlightsTry: "Prova",
         highlightsSeeAll: "Vedi tutte le modifiche",
@@ -888,6 +889,7 @@ extension Strings {
         switcherMinimizedPlacementNormal: "Ordine normale",
         switcherMinimizedPlacementEnd: "Sposta alla fine",
         switcherMinimizedPlacementHidden: "Nascondi",
-        switcherShowFullscreenWindows: "Mostra le finestre a schermo intero"
+        switcherShowFullscreenWindows: "Mostra le finestre a schermo intero",
+        shelfFileMissing: "Il file non esiste più"
     )
 }

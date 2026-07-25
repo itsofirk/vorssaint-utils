@@ -33,12 +33,17 @@ enum WindowEnumerator {
     }
 
     static func listWindows(for pid: pid_t, maximumCount: Int = 12) -> [SwitcherItem] {
+        // The Dock previews honor the same current-desktop choice as the
+        // switcher: the Settings caption promises that picking a window
+        // never hops desktops while the option is on, and a preview click
+        // is a pick like any other.
         listWindows(filterPID: pid,
                     maximumCount: maximumCount,
                     includeWindowlessFinder: false,
                     groupByApp: false,
                     switchSettings: .init(),
-                    currentSpaceOnly: false)
+                    currentSpaceOnly: UserDefaults.standard.bool(
+                        forKey: DefaultsKey.switcherCurrentSpaceOnly))
     }
 
     private static func listWindows(filterPID: pid_t?,

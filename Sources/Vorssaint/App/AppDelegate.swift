@@ -4,6 +4,7 @@
 import AppKit
 import Combine
 import SwiftUI
+import UserNotifications
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSWindowDelegate {
     private var statusController: StatusItemController!
@@ -33,6 +34,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        // Before any window exists, so nothing is ever built with the wrong
+        // appearance and then repainted.
+        AppAppearanceController.shared.apply()
+        // UNUserNotificationCenter aborts in a process without a bundle;
+        // guard keeps ad-hoc runs of the bare binary alive for probing.
+        if Bundle.main.bundleIdentifier != nil {
+            UNUserNotificationCenter.current().delegate = self
+        }
         beginStartupWatch()
         Self.boundAccessibilityWaits()
 
@@ -297,6 +306,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         let host = NSHostingController(rootView: MenuPanelView())
         host.sizingOptions = .preferredContentSize
         popover.contentViewController = host
+        AppAppearanceController.shared.follow(panel: popover)
         NotificationCenter.default.addObserver(self, selector: #selector(appResignedActive),
                                                name: NSApplication.didResignActiveNotification, object: nil)
     }
@@ -1662,5 +1672,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
     private func markUpdateShowcaseIntroSeen() {
         UserDefaults.standard.set(UpdateShowcaseInfo.releaseVersion,
                                   forKey: DefaultsKey.updateShowcaseIntroVersion)
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        if let transactionID = Notifier.whatsAppOrganizerTransactionID(from: response) {
+            DispatchQueue.main.async {
+                WhatsAppDownloadOrganizer.shared.undoLastRun(transactionID: transactionID)
+            }
+        }
+        completionHandler()
     }
 }

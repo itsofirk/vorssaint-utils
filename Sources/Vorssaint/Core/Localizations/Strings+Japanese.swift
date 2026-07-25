@@ -879,6 +879,7 @@ extension Strings {
         highlightsTitle: "このアップデートの新機能",
         highlightsCaptionDockPreview: "Dock Preview がDockの拡大がオンのままでも動作するようになりました",
         highlightsCaptionScreenshot: "スクリーンショットにピクセルルーペとQRコードの読み取りが加わりました",
+        highlightsCaptionSnippetLibrary: "検索できるスニペットメニューがカーソル位置にスニペットを入力します",
         highlightsConfigure: "設定する",
         highlightsTry: "試す",
         highlightsSeeAll: "すべての変更を見る",
@@ -888,6 +889,7 @@ extension Strings {
         switcherMinimizedPlacementNormal: "通常の順序",
         switcherMinimizedPlacementEnd: "最後に配置",
         switcherMinimizedPlacementHidden: "非表示",
-        switcherShowFullscreenWindows: "フルスクリーンのウインドウを表示"
+        switcherShowFullscreenWindows: "フルスクリーンのウインドウを表示",
+        shelfFileMissing: "ファイルはもう存在しません"
     )
 }

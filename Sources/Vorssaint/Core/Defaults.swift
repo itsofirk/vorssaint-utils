@@ -8,6 +8,7 @@ import Foundation
 /// Every UserDefaults key used by the app, in one place.
 enum DefaultsKey {
     static let language = "appLanguage"                   // AppLanguage.rawValue
+    static let appearance = "appAppearance"               // AppAppearance.rawValue
     static let clamshellPreferred = "clamshellPreferred"  // apply closed-lid mode to every session
     static let onboardingStep = "onboardingStep"          // resume point if onboarding is interrupted
     static let featuresOnboardingVersion = "featuresOnboardingVersion" // last feature-tour marker handled
@@ -39,6 +40,12 @@ enum DefaultsKey {
     static let mouseNavigationEnabled = "mouseNavigationEnabled" // side buttons trigger Back and Forward
     static let mouseButtonShortcutsEnabled = "mouseButtonShortcutsEnabled" // extra buttons press a key combination (issue #282)
     static let mouseButtonShortcuts = "mouseButtonShortcuts" // [button number: GlobalShortcut storage value]
+    // One list of bundle ids per mouse feature: apps it leaves alone (issue #358).
+    static let smoothScrollExceptions = "smoothScrollExceptions"
+    static let scrollInverterExceptions = "scrollInverterExceptions"
+    static let mouseNavigationExceptions = "mouseNavigationExceptions"
+    static let mouseButtonExceptions = "mouseButtonExceptions"
+    static let middleClickExceptions = "middleClickExceptions"
     static let switcherEnabled = "switcherEnabled"
     static let switcherShortcut = "switcherShortcut"      // GlobalShortcut storage value
     static let switcherWindowShortcut = "switcherWindowShortcut" // GlobalShortcut storage value
@@ -100,6 +107,34 @@ enum DefaultsKey {
     static let cleanerLastAutoRun = "cleanerLastAutoRun"                // Double, epoch seconds
     static let cleanerLastAutoFreed = "cleanerLastAutoFreed"            // Int bytes
     static let cleanerBadgeSeen = "cleanerBadgeSeen"                    // red dot guiding to the new cleaner
+    // Confirmed WhatsApp downloads in the top level of ~/Downloads.
+    static let whatsAppDownloadsAutomaticEnabled = "whatsAppDownloadsAutomaticEnabled"
+    static let whatsAppDownloadsCategories = "whatsAppDownloadsCategories" // comma-joined category ids
+    static let whatsAppDownloadsRetentionDays = "whatsAppDownloadsRetentionDays"
+    static let whatsAppDownloadsNotify = "whatsAppDownloadsNotify"
+    static let whatsAppDownloadsIncludeExisting = "whatsAppDownloadsIncludeExisting"
+    static let whatsAppDownloadsAutomaticStartDate = "whatsAppDownloadsAutomaticStartDate"
+    static let whatsAppDownloadsLastAutoRun = "whatsAppDownloadsLastAutoRun"
+    static let whatsAppDownloadsLastCleanup = "whatsAppDownloadsLastCleanup"
+    static let whatsAppDownloadsLastCleanupCount = "whatsAppDownloadsLastCleanupCount"
+    static let whatsAppDownloadsLastCleanupBytes = "whatsAppDownloadsLastCleanupBytes"
+    static let whatsAppDownloadsLastCleanupFailed = "whatsAppDownloadsLastCleanupFailed"
+    static let whatsAppDownloadsLastCleanupAutomatic = "whatsAppDownloadsLastCleanupAutomatic"
+    static let whatsAppDownloadsExclusions = "whatsAppDownloadsExclusions" // device:inode ids
+    static let whatsAppDownloadsAccessConfirmed = "whatsAppDownloadsAccessConfirmed"
+    // Experimental organizer for confirmed WhatsApp downloads.
+    static let whatsAppOrganizerEnabled = "whatsAppOrganizerEnabled"
+    static let whatsAppOrganizerDestinationPath = "whatsAppOrganizerDestinationPath"
+    static let whatsAppOrganizerDelayMinutes = "whatsAppOrganizerDelayMinutes"
+    static let whatsAppOrganizerCategories = "whatsAppOrganizerCategories"
+    static let whatsAppOrganizerLayout = "whatsAppOrganizerLayout"
+    static let whatsAppOrganizerDuplicateAction = "whatsAppOrganizerDuplicateAction"
+    static let whatsAppOrganizerRecords = "whatsAppOrganizerRecords"
+    static let whatsAppOrganizerUndoTransaction = "whatsAppOrganizerUndoTransaction"
+    static let whatsAppOrganizerLastRun = "whatsAppOrganizerLastRun"
+    static let whatsAppOrganizerLastMoved = "whatsAppOrganizerLastMoved"
+    static let whatsAppOrganizerLastDuplicates = "whatsAppOrganizerLastDuplicates"
+    static let whatsAppOrganizerLastFailed = "whatsAppOrganizerLastFailed"
     static let settingsWindowWidth = "settingsWindowWidth"     // last user-chosen content size (0 = unset)
     static let settingsWindowHeight = "settingsWindowHeight"
     static let shelfItems = "shelfItems"                  // Data: [ShelfPersistedItem] JSON
@@ -293,6 +328,7 @@ enum DefaultsKey {
     static let scratchpadShortcutEnabled = "scratchpadShortcutEnabled"
     static let scratchpadShortcut = "scratchpadShortcut"
     static let scratchpadRetention = "scratchpadRetention"   // never | day | week | month
+    static let scratchpadCloseOnClickOutside = "scratchpadCloseOnClickOutside"
     static let micMuteActive = "micMuteActive"               // mic muted by the app (survives relaunch)
     static let micMuteSavedVolume = "micMuteSavedVolume"     // input volume to restore on unmute
     static let micMuteMenuBarIndicator = "micMuteMenuBarIndicator" // badge the status icon while muted
@@ -313,7 +349,13 @@ enum DefaultsKey {
     static let screenshotShortcut = "screenshotShortcut"
     static let screenshotFreeze = "screenshotFreeze"
     static let screenshotSaveFolder = "screenshotSaveFolder"
+    static let screenshotSaveSubfolder = "screenshotSaveSubfolder"
+    static let screenshotFileNamePattern = "screenshotFileNamePattern"
+    static let screenshotFileNumberStart = "screenshotFileNumberStart"
+    static let screenshotFileNumberNext = "screenshotFileNumberNext"
+    static let screenshotDefaultAction = "screenshotDefaultAction"
     static let screenshotIncludePointer = "screenshotIncludePointer"
+    static let screenshotShowLastRegion = "screenshotShowLastRegion"
     static let screenshotDownscale = "screenshotDownscale"
     static let screenshotDelay = "screenshotDelay"
     static let screenshotLastTool = "screenshotLastTool"
@@ -326,6 +368,7 @@ enum DefaultsKey {
     static let screenshotBackdropStyle = "screenshotBackdropStyle"
     static let screenshotBackdropPresets = "screenshotBackdropPresets"
     static let screenshotOpenEditorDirectly = "screenshotOpenEditorDirectly"
+    static let screenshotCopyToClipboard = "screenshotCopyToClipboard"
     static let panelUtilityScreenshot = "panelUtilityScreenshot"
 
     // Window Layout — snapping, global shortcuts and optional pointer gestures.
@@ -360,12 +403,15 @@ enum DefaultsKey {
     // Text snippets: type a trigger, get the expansion.
     static let textSnippetsEnabled = "textSnippetsEnabled"
     static let textSnippets = "textSnippets"              // Data: [TextSnippet] JSON
+    static let snippetLibraryEnabled = "snippetLibraryEnabled"
+    static let snippetLibraryShortcut = "snippetLibraryShortcut"
 
     // Radial menu: a wheel of actions on a shortcut.
     static let radialMenuEnabled = "radialMenuEnabled"
     static let radialMenuShortcut = "radialMenuShortcut"
     static let radialMenuAtPointer = "radialMenuAtPointer" // false: screen center
     static let radialMenuMouseButton = "radialMenuMouseButton" // RadialMenuMouseTrigger.rawValue
+    static let radialMenuActivationMode = "radialMenuActivationMode" // RadialMenuActivationMode.rawValue
     static let radialMenuItems = "radialMenuItems"        // Data: [RadialMenuItem] JSON
 
     // Dev-build only: force the "update available" UI for local testing.
@@ -537,6 +583,7 @@ enum Defaults {
     static let allowedMonitorAlertCooldowns = [2, 5, 15, 30, 60]
 
     static let registeredDefaults: [String: Any] = [
+        DefaultsKey.appearance: AppAppearance.fallback.rawValue,
         DefaultsKey.clamshellPreferred: false,
         DefaultsKey.defaultDuration: 0,
         DefaultsKey.batteryLimit: 10,
@@ -557,6 +604,11 @@ enum Defaults {
         DefaultsKey.mouseNavigationEnabled: false,
         DefaultsKey.mouseButtonShortcutsEnabled: false,
         DefaultsKey.mouseButtonShortcuts: [String: String](),
+        DefaultsKey.smoothScrollExceptions: [],
+        DefaultsKey.scrollInverterExceptions: [],
+        DefaultsKey.mouseNavigationExceptions: [],
+        DefaultsKey.mouseButtonExceptions: [],
+        DefaultsKey.middleClickExceptions: [],
         DefaultsKey.switcherEnabled: true,
         DefaultsKey.switcherShortcut: "command:48",
         DefaultsKey.switcherWindowShortcut: GlobalShortcut.switcherWindowDefault.storageValue,
@@ -613,12 +665,41 @@ enum Defaults {
         DefaultsKey.cleanerLastAutoRun: 0.0,
         DefaultsKey.cleanerLastAutoFreed: 0,
         DefaultsKey.cleanerBadgeSeen: false,
+        DefaultsKey.whatsAppDownloadsAutomaticEnabled: false,
+        DefaultsKey.whatsAppDownloadsCategories: "image,video,audio",
+        DefaultsKey.whatsAppDownloadsRetentionDays: 7,
+        DefaultsKey.whatsAppDownloadsNotify: true,
+        DefaultsKey.whatsAppDownloadsIncludeExisting: false,
+        DefaultsKey.whatsAppDownloadsAutomaticStartDate: 0.0,
+        DefaultsKey.whatsAppDownloadsLastAutoRun: 0.0,
+        DefaultsKey.whatsAppDownloadsLastCleanup: 0.0,
+        DefaultsKey.whatsAppDownloadsLastCleanupCount: 0,
+        DefaultsKey.whatsAppDownloadsLastCleanupBytes: 0,
+        DefaultsKey.whatsAppDownloadsLastCleanupFailed: 0,
+        DefaultsKey.whatsAppDownloadsLastCleanupAutomatic: false,
+        DefaultsKey.whatsAppDownloadsExclusions: [],
+        DefaultsKey.whatsAppDownloadsAccessConfirmed: false,
+        DefaultsKey.whatsAppOrganizerEnabled: false,
+        DefaultsKey.whatsAppOrganizerDestinationPath: "",
+        DefaultsKey.whatsAppOrganizerDelayMinutes: 5,
+        DefaultsKey.whatsAppOrganizerCategories: "image,video,audio,document,archive,other",
+        DefaultsKey.whatsAppOrganizerLayout: "flat",
+        DefaultsKey.whatsAppOrganizerDuplicateAction: "trashNew",
+        DefaultsKey.whatsAppOrganizerRecords: Data(),
+        DefaultsKey.whatsAppOrganizerUndoTransaction: Data(),
+        DefaultsKey.whatsAppOrganizerLastRun: 0.0,
+        DefaultsKey.whatsAppOrganizerLastMoved: 0,
+        DefaultsKey.whatsAppOrganizerLastDuplicates: 0,
+        DefaultsKey.whatsAppOrganizerLastFailed: 0,
         DefaultsKey.urlCleanerEnabled: false,
         DefaultsKey.textSnippetsEnabled: false,
+        DefaultsKey.snippetLibraryEnabled: false,
+        DefaultsKey.snippetLibraryShortcut: GlobalShortcut.snippetLibraryDefault.storageValue,
         DefaultsKey.radialMenuEnabled: false,
         DefaultsKey.radialMenuShortcut: GlobalShortcut.radialMenuDefault.storageValue,
         DefaultsKey.radialMenuAtPointer: true,
         DefaultsKey.radialMenuMouseButton: RadialMenuMouseTrigger.off.rawValue,
+        DefaultsKey.radialMenuActivationMode: RadialMenuActivationMode.pressOrHold.rawValue,
         DefaultsKey.windowMaximizeEnabled: false,
         DefaultsKey.keyboardDebounceEnabled: false,
         DefaultsKey.keyboardDebounceWindowMs: defaultKeyboardDebounceWindowMs,
@@ -776,6 +857,7 @@ enum Defaults {
         DefaultsKey.scratchpadShortcutEnabled: false,
         DefaultsKey.scratchpadShortcut: GlobalShortcut.scratchpadDefault.storageValue,
         DefaultsKey.scratchpadRetention: ScratchpadRetention.never.rawValue,
+        DefaultsKey.scratchpadCloseOnClickOutside: true,
         DefaultsKey.micMuteActive: false,
         DefaultsKey.micMuteSavedVolume: 0.75,
         DefaultsKey.micMuteMenuBarIndicator: true,  // owner's call: on by default in 3.1.8 (badge only shows while muted)
@@ -794,7 +876,13 @@ enum Defaults {
         DefaultsKey.screenshotShortcut: GlobalShortcut.screenshotDefault.storageValue,
         DefaultsKey.screenshotFreeze: true,
         DefaultsKey.screenshotSaveFolder: "",
+        DefaultsKey.screenshotSaveSubfolder: "",
+        DefaultsKey.screenshotFileNamePattern: "",
+        DefaultsKey.screenshotFileNumberStart: 1,
+        DefaultsKey.screenshotFileNumberNext: 1,
+        DefaultsKey.screenshotDefaultAction: "",
         DefaultsKey.screenshotIncludePointer: false,
+        DefaultsKey.screenshotShowLastRegion: true,
         DefaultsKey.screenshotDownscale: false,
         DefaultsKey.screenshotDelay: 0,
         DefaultsKey.screenshotLastTool: "arrow",
@@ -807,6 +895,7 @@ enum Defaults {
         DefaultsKey.screenshotBackdropStyle: "",
         DefaultsKey.screenshotBackdropPresets: "[]",
         DefaultsKey.screenshotOpenEditorDirectly: false,
+        DefaultsKey.screenshotCopyToClipboard: false,
         DefaultsKey.panelUtilityScreenshot: true,
         DefaultsKey.windowLayoutShortcutsEnabled: false,
         DefaultsKey.windowGestureEnabled: false,
@@ -845,7 +934,21 @@ enum Defaults {
         migrateLegacySwitcherWindowShortcut(in: defaults)
         migrateLegacyKeyboardDebounceWindow(in: defaults)
         migrateUtilityOrderForScreenshot(in: defaults)
+        migrateScreenshotOpenEditorDirectly(in: defaults)
         migrateSilentHeadphonesDisconnectVolume(in: defaults)
+    }
+
+    /// The "open the editor right after capturing" toggle became the Edit
+    /// choice of the after-capture action picker. A setup that jumped
+    /// straight into the editor keeps doing exactly that, unless a newer
+    /// picker choice already exists.
+    static func migrateScreenshotOpenEditorDirectly(in defaults: UserDefaults) {
+        guard defaults.bool(forKey: DefaultsKey.screenshotOpenEditorDirectly) else { return }
+        defaults.set(false, forKey: DefaultsKey.screenshotOpenEditorDirectly)
+        let action = defaults.string(forKey: DefaultsKey.screenshotDefaultAction) ?? ""
+        guard action.isEmpty else { return }
+        defaults.set(ScreenshotDefaultAction.edit.rawValue,
+                     forKey: DefaultsKey.screenshotDefaultAction)
     }
 
     static func migrateLegacySwitcherWindowShortcut(in defaults: UserDefaults) {

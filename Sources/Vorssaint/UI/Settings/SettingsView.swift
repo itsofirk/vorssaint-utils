@@ -11,6 +11,9 @@ import SwiftUI
 final class SettingsRouter: ObservableObject {
     static let shared = SettingsRouter()
     @Published var page: SettingsPage = .general
+    /// One-shot hint for the Cleaner page's tool switcher, so a panel surface
+    /// can land directly on a specific tool. Consumed and cleared on arrival.
+    @Published var cleanerTool: String?
     private init() {}
 }
 
@@ -42,7 +45,9 @@ struct SettingsView: View {
             (categories.essentials, [
                 SidebarItem(page: .general, title: l10n.s.tabGeneral, icon: "gearshape",
                             keywords: [l10n.s.launchAtLogin, l10n.s.languageLabel, l10n.s.showMenuBarIcon,
-                                       l10n.s.musicBlockTitle, l10n.s.musicBlockSection]),
+                                       l10n.s.musicBlockTitle, l10n.s.musicBlockSection,
+                                       FeatureStrings.appearance(l10n.language).label,
+                                       FeatureStrings.appearance(l10n.language).dark]),
                 // Searching any feature name lands here even when the feature
                 // is hidden, so the hub is always the way back.
                 SidebarItem(page: .features, title: FeatureStrings.hub(l10n.language).pageTitle,
@@ -69,7 +74,8 @@ struct SettingsView: View {
                 SidebarItem(page: .mouse, title: l10n.s.tabMouse, icon: "computermouse",
                             keywords: [l10n.s.invertMouseScroll, l10n.s.middleClickTapPicker,
                                        l10n.s.smoothScrollName, l10n.s.mouseNavigationEnable,
-                                       FeatureStrings.mouseButtons(l10n.language).pageTitle]),
+                                       FeatureStrings.mouseButtons(l10n.language).pageTitle,
+                                       FeatureStrings.mouseExceptions(l10n.language).listTitle]),
                 SidebarItem(page: .switcher, title: l10n.s.tabSwitcher, icon: "rectangle.on.rectangle",
                             keywords: [l10n.s.switcherEnable, l10n.s.dockClickMinimize,
                                        l10n.s.dockClickCycleWindows]),
@@ -92,6 +98,11 @@ struct SettingsView: View {
                             keywords: ["PDF", "GIF", l10n.s.mediaStartConvertPDF, l10n.s.ocrName]),
             ]),
             (categories.utilities, [
+                SidebarItem(page: .cleaner, title: l10n.s.cleanerName, icon: "sparkles",
+                            keywords: [l10n.s.cleanerScheduleTitle,
+                                       FeatureStrings.whatsAppDownloads(l10n.language).title,
+                                       FeatureStrings.whatsAppDownloads(l10n.language).automatic,
+                                       FeatureStrings.whatsAppDownloads(l10n.language).fileTypes]),
                 SidebarItem(page: .quickTools, title: l10n.s.quickToolsTab, icon: "wand.and.rays",
                             keywords: [l10n.s.launcherName, l10n.s.colorPickerName,
                                        l10n.s.micMuteName, l10n.s.ocrName,
@@ -222,6 +233,7 @@ struct SettingsView: View {
         case .autoQuit: AutoQuitSettings()
         case .uninstaller: UninstallerView()
         case .urlCleaner: URLCleanerSettings()
+        case .cleaner: CleanerSettings()
         case .homebrew: HomebrewSettings()
         case .media: MediaSettings()
         case .clipboard: ClipboardSettings()
@@ -242,6 +254,7 @@ struct SettingsView: View {
 
 struct GeneralSettings: View {
     @ObservedObject private var l10n = L10n.shared
+    @ObservedObject private var appearance = AppAppearanceController.shared
     @ObservedObject private var features = FeatureRuntime.shared
     @ObservedObject private var hotkeys = HotkeyManager.shared
     @State private var launchAtLogin = LaunchAtLogin.isEnabled
@@ -250,6 +263,8 @@ struct GeneralSettings: View {
     @AppStorage(DefaultsKey.showCountdown) private var showCountdown = false
     @AppStorage(DefaultsKey.musicBlockEnabled) private var musicBlockEnabled = false
     @AppStorage(DefaultsKey.musicBlockReplacementPath) private var musicBlockReplacementPath = ""
+
+    private var appearanceStrings: AppearanceStrings { FeatureStrings.appearance(l10n.language) }
 
     var body: some View {
         Form {
@@ -275,6 +290,12 @@ struct GeneralSettings: View {
                         Text(language.displayName).tag(language)
                     }
                 }
+                Picker(appearanceStrings.label, selection: $appearance.appearance) {
+                    ForEach(AppAppearance.allCases) { option in
+                        Text(option.title(appearanceStrings)).tag(option)
+                    }
+                }
+                .pickerStyle(.segmented)
             }
             Section(l10n.s.menuBarSection) {
                 if AppFeature.keepAwake.isAvailable {
@@ -708,6 +729,9 @@ struct MouseSettings: View {
                     Text(l10n.s.scrollTrackpadNote)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    if inverterEnabled {
+                        MouseExceptionsList(scope: .scrollDirection)
+                    }
                 }
             }
             if AppFeature.smoothScroll.isAvailable {
@@ -731,6 +755,7 @@ struct MouseSettings: View {
                                 .foregroundStyle(.secondary)
                                 .frame(width: 34, alignment: .trailing)
                         }
+                        MouseExceptionsList(scope: .smoothScroll)
                     }
                 }
             }
@@ -747,6 +772,9 @@ struct MouseSettings: View {
                         Label(l10n.s.mouseNavigationActiveNow, systemImage: "checkmark.circle.fill")
                             .font(.caption)
                             .foregroundStyle(.green)
+                    }
+                    if mouseNavigationEnabled {
+                        MouseExceptionsList(scope: .navigation)
                     }
                 }
             }
@@ -779,6 +807,9 @@ struct MouseSettings: View {
                         Text(l10n.s.middleClickDragConflict)
                             .font(.caption)
                             .foregroundStyle(.orange)
+                    }
+                    if middleClickEnabled {
+                        MouseExceptionsList(scope: .middleClick)
                     }
                 }
             }

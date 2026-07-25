@@ -1023,6 +1023,7 @@ struct Strings {
     let highlightsTitle: String
     let highlightsCaptionDockPreview: String
     let highlightsCaptionScreenshot: String
+    let highlightsCaptionSnippetLibrary: String
     let highlightsConfigure: String
     let highlightsTry: String
     let highlightsSeeAll: String
@@ -1033,6 +1034,7 @@ struct Strings {
     let switcherMinimizedPlacementEnd: String
     let switcherMinimizedPlacementHidden: String
     let switcherShowFullscreenWindows: String
+    let shelfFileMissing: String
 }
 
 // MARK: - Português (Brasil)
@@ -1913,6 +1915,7 @@ extension Strings {
         highlightsTitle: "Novidades desta versão",
         highlightsCaptionDockPreview: "O Dock Preview agora funciona com a ampliação do Dock ligada",
         highlightsCaptionScreenshot: "A captura de tela ganhou uma lupa de pixels e leitura de QR codes",
+        highlightsCaptionSnippetLibrary: "Um menu de snippets com busca digita qualquer snippet direto no cursor",
         highlightsConfigure: "Configurar",
         highlightsTry: "Experimentar",
         highlightsSeeAll: "Ver todas as mudanças",
@@ -1922,7 +1925,8 @@ extension Strings {
         switcherMinimizedPlacementNormal: "Ordem normal",
         switcherMinimizedPlacementEnd: "Colocar no final",
         switcherMinimizedPlacementHidden: "Ocultar",
-        switcherShowFullscreenWindows: "Mostrar janelas em tela cheia"
+        switcherShowFullscreenWindows: "Mostrar janelas em tela cheia",
+        shelfFileMissing: "The file no longer exists"
     )
 }
 
@@ -2804,6 +2808,7 @@ extension Strings {
         highlightsTitle: "New in this update",
         highlightsCaptionDockPreview: "Dock Preview now works with Dock magnification turned on",
         highlightsCaptionScreenshot: "The screenshot tool gained a pixel loupe and QR code reading",
+        highlightsCaptionSnippetLibrary: "A searchable snippet menu types any snippet right at your cursor",
         highlightsConfigure: "Set up",
         highlightsTry: "Try it",
         highlightsSeeAll: "See all changes",
@@ -2813,6 +2818,7 @@ extension Strings {
         switcherMinimizedPlacementNormal: "Normal ordering",
         switcherMinimizedPlacementEnd: "Place at end",
         switcherMinimizedPlacementHidden: "Hide",
-        switcherShowFullscreenWindows: "Show fullscreen windows"
+        switcherShowFullscreenWindows: "Show fullscreen windows",
+        shelfFileMissing: "O arquivo não existe mais"
     )
 }

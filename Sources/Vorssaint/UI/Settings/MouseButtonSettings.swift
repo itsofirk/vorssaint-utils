@@ -54,6 +54,7 @@ struct MouseButtonShortcutsSection: View {
                     mappingRow(pendingButton, shortcut: nil)
                 }
                 captureRow
+                MouseExceptionsList(scope: .buttonShortcuts)
             }
         }
         .onDisappear {

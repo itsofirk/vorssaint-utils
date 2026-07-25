@@ -879,6 +879,7 @@ extension Strings {
         highlightsTitle: "Bu güncellemedeki yenilikler",
         highlightsCaptionDockPreview: "Dock Preview artık Dock büyütme açıkken de çalışıyor",
         highlightsCaptionScreenshot: "Ekran görüntüsü aracına piksel büyüteci ve QR kod okuma eklendi",
+        highlightsCaptionSnippetLibrary: "Aranabilir parçacık menüsü istediğiniz parçacığı imlece yazar",
         highlightsConfigure: "Ayarla",
         highlightsTry: "Dene",
         highlightsSeeAll: "Tüm değişiklikleri gör",
@@ -888,6 +889,7 @@ extension Strings {
         switcherMinimizedPlacementNormal: "Normal sıralama",
         switcherMinimizedPlacementEnd: "Sona yerleştir",
         switcherMinimizedPlacementHidden: "Gizle",
-        switcherShowFullscreenWindows: "Tam ekran pencereleri göster"
+        switcherShowFullscreenWindows: "Tam ekran pencereleri göster",
+        shelfFileMissing: "Dosya artık yok"
     )
 }

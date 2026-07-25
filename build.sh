@@ -102,6 +102,8 @@ if (( TEST )); then
         Sources/Vorssaint/Core/ScratchpadStrings.swift \
         Sources/Vorssaint/Core/RadialMenuStrings.swift \
         Sources/Vorssaint/Core/MenuBarAppearanceStrings.swift \
+        Sources/Vorssaint/Core/AppAppearance.swift \
+        Sources/Vorssaint/Core/AppearanceStrings.swift \
         Sources/Vorssaint/Core/BatteryTimeStrings.swift \
         Sources/Vorssaint/Core/KeepAwakeStrings.swift \
         Sources/Vorssaint/Core/PermissionGuideStrings.swift \
@@ -113,6 +115,8 @@ if (( TEST )); then
         Sources/Vorssaint/Core/Localization.swift \
         Sources/Vorssaint/Core/Localizations/Strings+*.swift \
         Sources/Vorssaint/Core/FeatureStrings.swift \
+        Sources/Vorssaint/Core/WhatsAppDownloadStrings.swift \
+        Sources/Vorssaint/Core/WhatsAppOrganizerStrings.swift \
         Sources/Vorssaint/Core/ReleaseNotes.swift \
         Sources/Vorssaint/Core/URLCleaning.swift \
         Sources/Vorssaint/Services/GeneralPasteboardAccess.swift \
@@ -134,7 +138,9 @@ if (( TEST )); then
         Sources/Vorssaint/Services/MiddleClick/MiddleClickSupport.swift \
         Sources/Vorssaint/Services/MouseNavigation/MouseNavigationSupport.swift \
         Sources/Vorssaint/Services/MouseButtons/MouseButtonShortcutSupport.swift \
+        Sources/Vorssaint/Services/MouseExceptions/MouseAppExceptionSupport.swift \
         Sources/Vorssaint/Core/MouseButtonStrings.swift \
+        Sources/Vorssaint/Core/MouseExceptionStrings.swift \
         Sources/Vorssaint/Services/QuickTools/QuickToolsSupport.swift \
         Sources/Vorssaint/Services/QuickTools/QuickTogglesSupport.swift \
         Sources/Vorssaint/Services/QuickTools/ScreenshotSupport.swift \
@@ -164,6 +170,7 @@ if (( TEST )); then
         Sources/Vorssaint/Services/Cleaner/CleanerSupport.swift \
         Sources/Vorssaint/Services/Cleaner/CleanerPolicy.swift \
         Sources/Vorssaint/Services/Cleaner/CleanerSchedule.swift \
+        Sources/Vorssaint/Services/ManagedDownloads/WhatsAppDownloadSupport.swift \
         Tests/MetricsTests.swift \
         -o build/metrics-tests
     ./build/metrics-tests
