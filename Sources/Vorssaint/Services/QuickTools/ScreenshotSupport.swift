@@ -234,11 +234,11 @@ enum ScreenshotSupport {
     // MARK: - File naming
 
     /// Stable local file name with a localizable prefix and colon-free time.
-    static func fileName(prefix: String, date: Date) -> String {
+    static func fileName(prefix: String, date: Date, fileExtension: String = "png") -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd 'at' HH.mm.ss"
-        return "\(prefix) \(formatter.string(from: date)).png"
+        return "\(prefix) \(formatter.string(from: date)).\(fileExtension)"
     }
 
     /// Expands a date-token pattern into a relative subfolder path, e.g.
@@ -762,6 +762,13 @@ enum ScreenshotSupport {
         return (clamped * min(imageSize.width, imageSize.height) * 0.2).rounded()
     }
 
+    /// Gaussian blur radius in output pixels. Keeping it proportional makes
+    /// the same slider look consistent on small screenshots and 4K video.
+    static func backdropBlurRadius(for size: CGSize, factor: CGFloat) -> CGFloat {
+        let clamped = max(0, min(1, factor))
+        return clamped * min(size.width, size.height) * 0.035
+    }
+
     /// The full backdrop configuration behind a capture, persisted as JSON
     /// (one style in use, plus the user's saved presets). Colors are sRGB
     /// components so the codec stays pure and testable.
@@ -779,19 +786,48 @@ enum ScreenshotSupport {
         var imagePath: String?
         var padding: Double
         var cornerRadius: Double
+        var blur: Double
 
         init(kind: Kind = .none,
              presetID: String? = nil,
              colors: [[Double]]? = nil,
              imagePath: String? = nil,
              padding: Double = 0.5,
-             cornerRadius: Double = 0) {
+             cornerRadius: Double = 0,
+             blur: Double = 0) {
             self.kind = kind
             self.presetID = presetID
             self.colors = colors
             self.imagePath = imagePath
             self.padding = padding
             self.cornerRadius = cornerRadius
+            self.blur = blur
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case kind, presetID, colors, imagePath, padding, cornerRadius, blur
+        }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            kind = try values.decode(Kind.self, forKey: .kind)
+            presetID = try values.decodeIfPresent(String.self, forKey: .presetID)
+            colors = try values.decodeIfPresent([[Double]].self, forKey: .colors)
+            imagePath = try values.decodeIfPresent(String.self, forKey: .imagePath)
+            padding = try values.decode(Double.self, forKey: .padding)
+            cornerRadius = try values.decode(Double.self, forKey: .cornerRadius)
+            blur = try values.decodeIfPresent(Double.self, forKey: .blur) ?? 0
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var values = encoder.container(keyedBy: CodingKeys.self)
+            try values.encode(kind, forKey: .kind)
+            try values.encodeIfPresent(presetID, forKey: .presetID)
+            try values.encodeIfPresent(colors, forKey: .colors)
+            try values.encodeIfPresent(imagePath, forKey: .imagePath)
+            try values.encode(padding, forKey: .padding)
+            try values.encode(cornerRadius, forKey: .cornerRadius)
+            try values.encode(blur, forKey: .blur)
         }
 
         /// Clamps sliders, validates colors and drops broken configurations
@@ -802,6 +838,7 @@ enum ScreenshotSupport {
             style.padding = style.padding.isFinite ? max(0, min(1, style.padding)) : 0.5
             style.cornerRadius = style.cornerRadius.isFinite
                 ? max(0, min(1, style.cornerRadius)) : 0.1
+            style.blur = style.blur.isFinite ? max(0, min(1, style.blur)) : 0
             switch style.kind {
             case .none:
                 break

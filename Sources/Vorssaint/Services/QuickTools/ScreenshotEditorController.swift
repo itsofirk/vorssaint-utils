@@ -9,7 +9,7 @@ import Vision
 /// Everything the annotation editor can do to one capture: the mutable
 /// document (image, annotations, undo history) and the export paths. The
 /// SwiftUI editor view observes this model; geometry is in image pixels.
-final class ScreenshotEditorModel: ObservableObject {
+final class ScreenshotEditorModel: ObservableObject, BackdropEditing {
     @Published private(set) var baseImage: CGImage
     @Published var annotations: [ScreenshotSupport.Annotation] = []
     @Published var selectedID: UUID?
@@ -232,10 +232,12 @@ final class ScreenshotEditorModel: ObservableObject {
         // A preset is the look, not this capture's sliders.
         snapshot.padding = 0.5
         snapshot.cornerRadius = 0.1
+        snapshot.blur = 0
         guard !backdropPresets.contains(where: {
             var candidate = $0
             candidate.padding = 0.5
             candidate.cornerRadius = 0.1
+            candidate.blur = 0
             return candidate == snapshot
         }) else { return }
         backdropPresets = Array((backdropPresets + [snapshot])

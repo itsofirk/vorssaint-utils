@@ -17,9 +17,6 @@ final class ScreenshotService: ObservableObject {
     private var session: ScreenshotSelectionController?
     private var preview: ScreenshotQuickPreviewController?
     private var editors: [ScreenshotEditorController] = []
-    /// The menu bar app is normally accessory-only. While an editor exists
-    /// it becomes regular so the window is recoverable through Command Tab.
-    private var promotedActivationForEditors = false
     private var countdown: DispatchWorkItem?
     private var countdownRemaining = 0
 
@@ -69,7 +66,9 @@ final class ScreenshotService: ObservableObject {
     /// Starts a capture; pressing the shortcut again while a countdown runs
     /// cancels it, and a session in progress is left alone.
     func capture() {
-        guard session == nil else { return }
+        // Another feature may already own the capture surface (copying text
+        // off the screen picks an area the same way).
+        guard session == nil, !ScreenshotSelectionController.isSessionOnScreen else { return }
         if countdown != nil {
             countdown?.cancel()
             countdown = nil
@@ -95,7 +94,7 @@ final class ScreenshotService: ObservableObject {
             beginSelection()
             return
         }
-        QuickToolHUD.show(icon: "timer", message: "\(countdownRemaining)")
+        QuickToolHUD.showCountdown(countdownRemaining)
         let work = DispatchWorkItem { [weak self] in
             guard let self else { return }
             self.countdownRemaining -= 1
@@ -106,7 +105,7 @@ final class ScreenshotService: ObservableObject {
     }
 
     private func beginSelection() {
-        guard session == nil else { return }
+        guard session == nil, !ScreenshotSelectionController.isSessionOnScreen else { return }
         preview?.close()
         preview = nil
         let defaults = UserDefaults.standard
@@ -121,6 +120,9 @@ final class ScreenshotService: ObservableObject {
             switch outcome {
             case .captured(let capture):
                 self.route(capture)
+            case .region:
+                // Only the recorder asks for geometry; this session never does.
+                break
             case .cancelled:
                 break
             case .failed:
@@ -196,20 +198,16 @@ final class ScreenshotService: ObservableObject {
     }
 
     func openEditor(with capture: ScreenshotSelectionController.Capture) {
-        if editors.isEmpty, NSApp.activationPolicy() != .regular {
-            promotedActivationForEditors = NSApp.setActivationPolicy(.regular)
-        }
+        EditorActivationPolicy.retain()
         let editor = ScreenshotEditorController(capture: capture)
         editors.append(editor)
         editor.show()
     }
 
     func editorDidClose(_ editor: ScreenshotEditorController) {
+        guard editors.contains(where: { $0 === editor }) else { return }
         editors.removeAll { $0 === editor }
-        if editors.isEmpty, promotedActivationForEditors {
-            NSApp.setActivationPolicy(.accessory)
-            promotedActivationForEditors = false
-        }
+        EditorActivationPolicy.release()
     }
 
     /// Automatic copy stays quiet on success: the preview or the editor is

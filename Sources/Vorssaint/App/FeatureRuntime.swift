@@ -117,14 +117,14 @@ final class FeatureRuntime: ObservableObject {
     /// their surfaces simply follow availability in the UI.
     private static let bindings: [AppFeature: () -> Void] = [
         .switcher: {
-            AppActivationTracker.shared.syncWithFeatures()
+            WindowUseTracker.shared.syncWithFeatures()
             AppSwitcher.shared.syncWithPreferences()
         },
         .dockPreview: { DockPreviewService.shared.syncWithPreferences() },
         .dockClick: { DockClickService.shared.syncWithPreferences() },
         .windowMaximizer: { WindowMaximizer.shared.syncWithPreferences() },
         .windowLayout: {
-            AppActivationTracker.shared.syncWithFeatures()
+            WindowUseTracker.shared.syncWithFeatures()
             WindowLayoutService.shared.syncWithPreferences()
         },
         .autoQuit: { AutoQuitService.shared.syncWithPreferences() },
@@ -134,6 +134,7 @@ final class FeatureRuntime: ObservableObject {
         .mouseButtonShortcuts: { MouseButtonShortcutService.shared.syncWithPreferences() },
         .middleClick: { MiddleClickService.shared.syncWithPreferences() },
         .keyboardDebounce: { KeyboardDebounceService.shared.syncWithPreferences() },
+        .superKey: { SuperKeyService.shared.syncWithPreferences() },
         .textSnippets: {
             TextSnippetService.shared.syncWithPreferences()
             SnippetLibraryService.shared.syncWithPreferences()
@@ -160,9 +161,11 @@ final class FeatureRuntime: ObservableObject {
         .colorPicker: { ColorSamplerService.shared.syncWithPreferences() },
         .screenOCR: { ScreenTextService.shared.syncWithPreferences() },
         .screenshot: { ScreenshotService.shared.syncWithPreferences() },
+        .screenRecorder: { ScreenRecorderService.shared.syncWithPreferences() },
         .cameraPreview: { CameraPreviewService.shared.syncWithPreferences() },
         .radialMenu: { RadialMenuService.shared.syncWithPreferences() },
         .scratchpad: { ScratchpadService.shared.syncWithPreferences() },
+        .commandBar: { CommandBarService.shared.syncWithPreferences() },
         .cleaner: {
             CleanerScheduler.shared.syncWithPreferences()
             WhatsAppDownloadScheduler.shared.syncWithPreferences()
@@ -172,6 +175,7 @@ final class FeatureRuntime: ObservableObject {
                 WhatsAppDownloadOrganizer.shared.stop()
             }
         },
+        .appUpdates: { AppUpdatesService.shared.syncWithPreferences() },
         .monitorCPU: { FeatureRuntime.syncMonitor() },
         .monitorGPU: { FeatureRuntime.syncMonitor() },
         .monitorMemory: { FeatureRuntime.syncMonitor() },

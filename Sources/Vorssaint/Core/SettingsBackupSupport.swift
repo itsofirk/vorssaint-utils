@@ -31,6 +31,8 @@ enum SettingsBackupSupport {
         DefaultsKey.finderCutPasteEnabled,
         DefaultsKey.textSnippets,
         DefaultsKey.radialMenuItems,
+        DefaultsKey.commandBarLinks,
+        DefaultsKey.commandBarRowShortcuts,
         DefaultsKey.language,
         DefaultsKey.appVolumes,
         DefaultsKey.appOutputDevices,
@@ -57,7 +59,6 @@ enum SettingsBackupSupport {
         // feature intros the user has already been through.
         DefaultsKey.hasOnboarded,
         DefaultsKey.onboardingStep,
-        DefaultsKey.dockPreviewIntroVersion,
         DefaultsKey.featuresOnboardingVersion,
         DefaultsKey.lastUpdateIntroVersion,
         DefaultsKey.supportUpdateIntroVersion,
@@ -72,9 +73,15 @@ enum SettingsBackupSupport {
     static let machineStateKeys: Set<String> = [
         DefaultsKey.micMuteActive,
         DefaultsKey.micMuteSavedVolume,
+        // Levels and device ids belong to the microphones of one Mac.
+        DefaultsKey.micMuteSavedVolumes,
+        DefaultsKey.micMuteMutedDevices,
         DefaultsKey.cleanerLastAutoRun,
+        // When the last check ran and what it found belong to one Mac.
+        DefaultsKey.appUpdatesLastCheck,
+        DefaultsKey.appUpdatesLastCount,
+        DefaultsKey.appUpdatesNotifiedIDs,
         DefaultsKey.cleanerLastAutoFreed,
-        DefaultsKey.cleanerBadgeSeen,
         DefaultsKey.whatsAppDownloadsAutomaticStartDate,
         DefaultsKey.whatsAppDownloadsLastAutoRun,
         DefaultsKey.whatsAppDownloadsLastCleanup,
@@ -91,6 +98,8 @@ enum SettingsBackupSupport {
         DefaultsKey.whatsAppOrganizerLastMoved,
         DefaultsKey.whatsAppOrganizerLastDuplicates,
         DefaultsKey.whatsAppOrganizerLastFailed,
+        // What one person runs most is habit, not configuration.
+        DefaultsKey.commandBarUsage,
         DefaultsKey.simulateUpdate,
         DefaultsKey.updateShowcaseIntroVersion,
         DefaultsKey.updateShowcaseMediaOverride,

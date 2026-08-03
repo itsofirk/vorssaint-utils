@@ -86,12 +86,15 @@ enum PanelSectionID: String, CaseIterable, Identifiable {
         // The fan curves read the same thermal picture as the monitor, so the
         // beta rides on the monitor family being present at all.
         case .fanControl: return FeatureVisibilitySupport.monitorFeatures
-        case .utilities: return [.quickLauncher, .cleaner, .homebrew, .mediaTools, .clipboardHistory,
+        case .utilities: return [.quickLauncher, .cleaner, .homebrew, .appUpdates, .mediaTools,
+                                 .clipboardHistory,
                                  .windowLayout, .uninstaller, .urlCleaner, .cleaningMode, .screenOCR,
-                                 .colorPicker, .micMute, .screenshot, .cameraPreview, .scratchpad]
-        case .controls: return [.scrollInverter, .mouseNavigation, .switcher, .finderCutPaste, .autoQuit,
+                                 .colorPicker, .micMute, .screenshot, .screenRecorder,
+                                 .cameraPreview, .scratchpad, .commandBar]
+        case .controls: return [.scrollInverter, .mouseNavigation, .mouseButtonShortcuts, .switcher,
+                                .finderCutPaste, .autoQuit,
                                 .shelf, .windowMaximizer, .dockPreview, .keyboardDebounce, .dockClick,
-                                .middleClick, .textSnippets, .radialMenu]
+                                .middleClick, .textSnippets, .superKey, .radialMenu]
         case .toggles: return [.quickToggles]
         }
     }

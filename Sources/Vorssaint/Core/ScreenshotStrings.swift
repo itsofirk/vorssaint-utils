@@ -92,6 +92,7 @@ struct ScreenshotFeatureStrings {
     let autoCopyCaption: String
     let hintLoupe: String
     let lastRegionToggle: String
+    let backdropBlurLabel: String
 }
 
 extension FeatureStrings {
@@ -202,7 +203,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Copy to the clipboard automatically",
         autoCopyCaption: "Every capture goes to the clipboard as soon as it is taken, ready to paste. Saving a file stays a separate choice.",
         hintLoupe: "Z toggles the loupe",
-        lastRegionToggle: "Show the last capture outline"
+        lastRegionToggle: "Show the last capture outline",
+        backdropBlurLabel: "Blur"
     )
 
     static let ptBR = ScreenshotFeatureStrings(
@@ -292,7 +294,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Copiar para a área de transferência automaticamente",
         autoCopyCaption: "Toda captura vai para a área de transferência assim que é feita, pronta para colar. Salvar um arquivo continua sendo uma escolha à parte.",
         hintLoupe: "Z alterna a lupa",
-        lastRegionToggle: "Mostrar o contorno da última captura"
+        lastRegionToggle: "Mostrar o contorno da última captura",
+        backdropBlurLabel: "Desfoque"
     )
 
     static let tr = ScreenshotFeatureStrings(
@@ -382,7 +385,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Otomatik olarak panoya kopyala",
         autoCopyCaption: "Her yakalama alınır alınmaz panoya gider ve yapıştırmaya hazır olur. Dosya olarak kaydetmek ayrı bir seçim olarak kalır.",
         hintLoupe: "Z büyüteci açar/kapatır",
-        lastRegionToggle: "Son yakalamanın çerçevesini göster"
+        lastRegionToggle: "Son yakalamanın çerçevesini göster",
+        backdropBlurLabel: "Bulanıklık"
     )
 
     static let ru = ScreenshotFeatureStrings(
@@ -472,7 +476,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Автоматически копировать в буфер обмена",
         autoCopyCaption: "Каждый снимок попадает в буфер обмена сразу после съёмки и готов к вставке. Сохранение файла остаётся отдельным выбором.",
         hintLoupe: "Z включает лупу",
-        lastRegionToggle: "Показывать контур последней области"
+        lastRegionToggle: "Показывать контур последней области",
+        backdropBlurLabel: "Размытие"
     )
 
     static let es = ScreenshotFeatureStrings(
@@ -562,7 +567,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Copiar al portapapeles automáticamente",
         autoCopyCaption: "Cada captura va al portapapeles en cuanto se toma, lista para pegar. Guardar un archivo sigue siendo una elección aparte.",
         hintLoupe: "Z activa la lupa",
-        lastRegionToggle: "Mostrar sombra de la última captura"
+        lastRegionToggle: "Mostrar sombra de la última captura",
+        backdropBlurLabel: "Desenfoque"
     )
 
     static let de = ScreenshotFeatureStrings(
@@ -652,7 +658,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Automatisch in die Zwischenablage kopieren",
         autoCopyCaption: "Jede Aufnahme landet sofort in der Zwischenablage, bereit zum Einfügen. Das Speichern als Datei bleibt eine eigene Entscheidung.",
         hintLoupe: "Z schaltet die Lupe um",
-        lastRegionToggle: "Umriss der letzten Aufnahme anzeigen"
+        lastRegionToggle: "Umriss der letzten Aufnahme anzeigen",
+        backdropBlurLabel: "Unschärfe"
     )
 
     static let fr = ScreenshotFeatureStrings(
@@ -742,7 +749,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Copier automatiquement dans le presse-papiers",
         autoCopyCaption: "Chaque capture va dans le presse-papiers dès qu'elle est prise, prête à être collée. Enregistrer un fichier reste un choix distinct.",
         hintLoupe: "Z active la loupe",
-        lastRegionToggle: "Afficher le contour de la dernière capture"
+        lastRegionToggle: "Afficher le contour de la dernière capture",
+        backdropBlurLabel: "Flou"
     )
 
     static let it = ScreenshotFeatureStrings(
@@ -832,7 +840,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "Copia automaticamente negli appunti",
         autoCopyCaption: "Ogni cattura va negli appunti appena viene fatta, pronta da incollare. Salvare un file resta una scelta a parte.",
         hintLoupe: "Z attiva la lente",
-        lastRegionToggle: "Mostra il contorno dell'ultima cattura"
+        lastRegionToggle: "Mostra il contorno dell'ultima cattura",
+        backdropBlurLabel: "Sfocatura"
     )
 
     static let ja = ScreenshotFeatureStrings(
@@ -922,7 +931,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "自動的にクリップボードへコピー",
         autoCopyCaption: "撮影した瞬間にクリップボードへ入り、すぐに貼り付けられます。ファイルとして保存するかどうかは別の選択のままです。",
         hintLoupe: "Zでルーペを切り替え",
-        lastRegionToggle: "最後のキャプチャ範囲を表示"
+        lastRegionToggle: "最後のキャプチャ範囲を表示",
+        backdropBlurLabel: "ぼかし"
     )
 
     static let ko = ScreenshotFeatureStrings(
@@ -1012,7 +1022,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "자동으로 클립보드에 복사",
         autoCopyCaption: "캡처하는 즉시 클립보드에 담겨 바로 붙여넣을 수 있습니다. 파일로 저장하는 것은 여전히 별도의 선택입니다.",
         hintLoupe: "Z 키로 확대경 전환",
-        lastRegionToggle: "마지막 캡처 영역 표시"
+        lastRegionToggle: "마지막 캡처 영역 표시",
+        backdropBlurLabel: "흐림"
     )
 
     static let zhHans = ScreenshotFeatureStrings(
@@ -1102,7 +1113,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "自动复制到剪贴板",
         autoCopyCaption: "每次截屏后会立即进入剪贴板，随时可以粘贴。是否保存为文件仍是单独的选择。",
         hintLoupe: "按 Z 切换放大镜",
-        lastRegionToggle: "显示上次截图区域轮廓"
+        lastRegionToggle: "显示上次截图区域轮廓",
+        backdropBlurLabel: "模糊"
     )
 
     static let zhTW = ScreenshotFeatureStrings(
@@ -1192,7 +1204,8 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "自動拷貝到剪貼板",
         autoCopyCaption: "每次截圖後會立即進入剪貼板，隨時可以貼上。是否儲存為檔案仍是獨立的選擇。",
         hintLoupe: "按 Z 切換放大鏡",
-        lastRegionToggle: "顯示上次截圖區域輪廓"
+        lastRegionToggle: "顯示上次截圖區域輪廓",
+        backdropBlurLabel: "模糊"
     )
 
     static let zhHK = ScreenshotFeatureStrings(
@@ -1282,6 +1295,7 @@ extension ScreenshotFeatureStrings {
         autoCopyToggle: "自動拷貝到剪貼板",
         autoCopyCaption: "每次截圖後會立即進入剪貼板，隨時可以貼上。是否儲存為檔案仍是獨立的選擇。",
         hintLoupe: "按 Z 切換放大鏡",
-        lastRegionToggle: "顯示上次截圖區域輪廓"
+        lastRegionToggle: "顯示上次截圖區域輪廓",
+        backdropBlurLabel: "模糊"
     )
 }

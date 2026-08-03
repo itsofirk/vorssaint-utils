@@ -87,7 +87,8 @@ extension SettingsCategoryStrings {
         windowsControls: "윈도우 및 제어",
         files: "파일",
         utilities: "유틸리티",
-        app: "앱"
+        app: "앱",
+        appManagement: "앱 관리"
     )
 }
 
@@ -186,14 +187,15 @@ extension WindowLayoutFeatureStrings {
         maximize: "최대화",
         center: "가운데",
         nextDisplay: "다음 디스플레이",
-        restore: "복원"
+        restore: "복원",
+        fullScreen: "전체 화면"
     )
 }
 
 extension MonitorAlertFeatureStrings {
     static let ko = MonitorAlertFeatureStrings(
         section: "알림",
-        caption: "선택한 기준에 도달하면 알림이 표시됩니다. CPU 사용량은 기준을 약 12초 동안 계속 넘어야 하므로 짧은 급증은 무시됩니다. 반복 설정은 같은 알림의 반복만 제한합니다.",
+        caption: "선택한 기준에 도달하면 알림이 표시됩니다. CPU 사용량과 온도는 기준을 약 12초 동안 계속 넘어야 하므로 짧은 급증은 무시됩니다. 반복 설정은 같은 알림의 반복만 제한합니다.",
         notificationsDenied: "시스템 설정에서 Vorssaint 알림이 꺼져 있어 경고를 표시할 수 없습니다.",
         cpu: "높은 CPU 사용량",
         cpuTemperature: "높은 CPU 온도",
@@ -229,13 +231,15 @@ struct SettingsCategoryStrings {
     let files: String
     let utilities: String
     let app: String
+    let appManagement: String
 
     static let enUS = SettingsCategoryStrings(
         essentials: "Essentials",
         windowsControls: "Window controls",
         files: "Files",
         utilities: "Utilities",
-        app: "App"
+        app: "App",
+        appManagement: "App management"
     )
 
     static let ptBR = SettingsCategoryStrings(
@@ -243,7 +247,8 @@ struct SettingsCategoryStrings {
         windowsControls: "Janelas e controles",
         files: "Arquivos",
         utilities: "Utilitários",
-        app: "App"
+        app: "App",
+        appManagement: "Gestão de apps"
     )
 
     static let tr = SettingsCategoryStrings(
@@ -251,7 +256,8 @@ struct SettingsCategoryStrings {
         windowsControls: "Pencereler ve denetimler",
         files: "Dosyalar",
         utilities: "Araçlar",
-        app: "Uygulama"
+        app: "Uygulama",
+        appManagement: "Uygulama yönetimi"
     )
 
     static let ru = SettingsCategoryStrings(
@@ -259,7 +265,8 @@ struct SettingsCategoryStrings {
         windowsControls: "Окна и управление",
         files: "Файлы",
         utilities: "Утилиты",
-        app: "Приложение"
+        app: "Приложение",
+        appManagement: "Управление приложениями"
     )
 
     static let es = SettingsCategoryStrings(
@@ -267,7 +274,8 @@ struct SettingsCategoryStrings {
         windowsControls: "Ventanas y controles",
         files: "Archivos",
         utilities: "Utilidades",
-        app: "App"
+        app: "App",
+        appManagement: "Gestión de apps"
     )
 
     static let de = SettingsCategoryStrings(
@@ -275,7 +283,8 @@ struct SettingsCategoryStrings {
         windowsControls: "Fenster und Steuerung",
         files: "Dateien",
         utilities: "Dienstprogramme",
-        app: "App"
+        app: "App",
+        appManagement: "App-Verwaltung"
     )
 
     static let fr = SettingsCategoryStrings(
@@ -283,7 +292,8 @@ struct SettingsCategoryStrings {
         windowsControls: "Fenêtres et contrôles",
         files: "Fichiers",
         utilities: "Utilitaires",
-        app: "App"
+        app: "App",
+        appManagement: "Gestion des apps"
     )
 
     static let it = SettingsCategoryStrings(
@@ -291,7 +301,8 @@ struct SettingsCategoryStrings {
         windowsControls: "Finestre e controlli",
         files: "File",
         utilities: "Utilità",
-        app: "App"
+        app: "App",
+        appManagement: "Gestione delle app"
     )
 
     static let ja = SettingsCategoryStrings(
@@ -299,7 +310,8 @@ struct SettingsCategoryStrings {
         windowsControls: "ウインドウと操作",
         files: "ファイル",
         utilities: "ユーティリティ",
-        app: "App"
+        app: "App",
+        appManagement: "Appの管理"
     )
 
     static let zhHans = SettingsCategoryStrings(
@@ -307,7 +319,8 @@ struct SettingsCategoryStrings {
         windowsControls: "窗口与控制",
         files: "文件",
         utilities: "实用工具",
-        app: "App"
+        app: "App",
+        appManagement: "App 管理"
     )
 
     static let zhTW = SettingsCategoryStrings(
@@ -315,7 +328,8 @@ struct SettingsCategoryStrings {
         windowsControls: "視窗與控制",
         files: "檔案",
         utilities: "工具程式",
-        app: "App"
+        app: "App",
+        appManagement: "App 管理"
     )
 
     static let zhHK = SettingsCategoryStrings(
@@ -323,7 +337,8 @@ struct SettingsCategoryStrings {
         windowsControls: "視窗及控制",
         files: "檔案",
         utilities: "工具",
-        app: "App"
+        app: "App",
+        appManagement: "App 管理"
     )
 }
 
@@ -936,6 +951,7 @@ struct WindowLayoutFeatureStrings {
     let center: String
     let nextDisplay: String
     let restore: String
+    let fullScreen: String
 
     static let enUS = WindowLayoutFeatureStrings(
         title: "Window layout",
@@ -986,7 +1002,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Maximize",
         center: "Center",
         nextDisplay: "Next display",
-        restore: "Restore"
+        restore: "Restore",
+        fullScreen: "Full Screen"
     )
 
     static let ptBR = WindowLayoutFeatureStrings(
@@ -1038,7 +1055,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Maximizar",
         center: "Centralizar",
         nextDisplay: "Próximo display",
-        restore: "Restaurar"
+        restore: "Restaurar",
+        fullScreen: "Tela cheia"
     )
 
     static let tr = WindowLayoutFeatureStrings(
@@ -1090,7 +1108,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Büyüt",
         center: "Ortala",
         nextDisplay: "Sonraki ekran",
-        restore: "Geri yükle"
+        restore: "Geri yükle",
+        fullScreen: "Tam ekran"
     )
 
     static let ru = WindowLayoutFeatureStrings(
@@ -1142,7 +1161,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Развернуть",
         center: "По центру",
         nextDisplay: "Следующий дисплей",
-        restore: "Восстановить"
+        restore: "Восстановить",
+        fullScreen: "Во весь экран"
     )
 
     static let es = WindowLayoutFeatureStrings(
@@ -1194,7 +1214,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Maximizar",
         center: "Centrar",
         nextDisplay: "Siguiente pantalla",
-        restore: "Restaurar"
+        restore: "Restaurar",
+        fullScreen: "Pantalla completa"
     )
 
     static let de = WindowLayoutFeatureStrings(
@@ -1246,7 +1267,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Maximieren",
         center: "Zentrieren",
         nextDisplay: "Nächstes Display",
-        restore: "Wiederherstellen"
+        restore: "Wiederherstellen",
+        fullScreen: "Vollbild"
     )
 
     static let fr = WindowLayoutFeatureStrings(
@@ -1298,7 +1320,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Agrandir",
         center: "Centrer",
         nextDisplay: "Écran suivant",
-        restore: "Restaurer"
+        restore: "Restaurer",
+        fullScreen: "Plein écran"
     )
 
     static let it = WindowLayoutFeatureStrings(
@@ -1350,7 +1373,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "Massimizza",
         center: "Centra",
         nextDisplay: "Display successivo",
-        restore: "Ripristina"
+        restore: "Ripristina",
+        fullScreen: "Schermo intero"
     )
 
     static let ja = WindowLayoutFeatureStrings(
@@ -1402,7 +1426,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "最大化",
         center: "中央",
         nextDisplay: "次のディスプレイ",
-        restore: "復元"
+        restore: "復元",
+        fullScreen: "フルスクリーン"
     )
 
     static let zhHans = WindowLayoutFeatureStrings(
@@ -1454,7 +1479,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "最大化",
         center: "居中",
         nextDisplay: "下一台显示器",
-        restore: "恢复"
+        restore: "恢复",
+        fullScreen: "全屏幕"
     )
 
     static let zhTW = WindowLayoutFeatureStrings(
@@ -1506,7 +1532,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "最大化",
         center: "置中",
         nextDisplay: "下一台顯示器",
-        restore: "還原"
+        restore: "還原",
+        fullScreen: "全螢幕"
     )
 
     static let zhHK = WindowLayoutFeatureStrings(
@@ -1558,7 +1585,8 @@ struct WindowLayoutFeatureStrings {
         maximize: "最大化",
         center: "置中",
         nextDisplay: "下一部顯示器",
-        restore: "還原"
+        restore: "還原",
+        fullScreen: "全螢幕"
     )
 }
 
@@ -1594,7 +1622,7 @@ struct MonitorAlertFeatureStrings {
 
     static let enUS = MonitorAlertFeatureStrings(
         section: "Alerts",
-        caption: "Alerts fire when their selected limits are reached. High CPU ignores spikes shorter than about 12 seconds. The repeat setting only limits repeats of the same alert.",
+        caption: "Alerts fire when their selected limits are reached. CPU use and temperature ignore spikes shorter than about 12 seconds. The repeat setting only limits repeats of the same alert.",
         notificationsDenied: "Notifications for Vorssaint are off in System Settings, so alerts cannot appear.",
         cpu: "High CPU",
         cpuTemperature: "High CPU temperature",
@@ -1625,7 +1653,7 @@ struct MonitorAlertFeatureStrings {
 
     static let ptBR = MonitorAlertFeatureStrings(
         section: "Alertas",
-        caption: "Os alertas disparam quando os limites escolhidos são atingidos. A CPU ignora picos com menos de 12 segundos. A opção de repetição só limita o mesmo alerta.",
+        caption: "Os alertas disparam quando os limites escolhidos são atingidos. O uso e a temperatura da CPU ignoram picos com menos de 12 segundos. A opção de repetição só limita o mesmo alerta.",
         notificationsDenied: "As notificações do Vorssaint estão desativadas nos Ajustes do Sistema, então os alertas não aparecem.",
         cpu: "CPU alta",
         cpuTemperature: "Temperatura alta da CPU",
