@@ -894,6 +894,8 @@ extension Strings {
         switcherMinimizedPlacementHidden: "숨기기",
         switcherShowFullscreenWindows: "전체 화면 윈도우 표시",
         shelfFileMissing: "파일이 더 이상 존재하지 않습니다",
-        previewSizeSmall: "작게"
+        previewSizeSmall: "작게",
+        mixerSoundEffectsOutputTitle: "시스템 사운드",
+        mixerSoundEffectsOutputTooltip: "알림 및 사운드 효과를 재생할 출력 선택"
     )
 }

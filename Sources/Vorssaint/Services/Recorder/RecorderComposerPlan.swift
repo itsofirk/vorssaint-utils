@@ -20,7 +20,6 @@ extension RecorderComposer {
     /// drawn sharp.
     static func makePlan(document: RecorderEditDocument,
                          track: RecorderPointerTrack,
-                         keyboard: RecorderKeyboardTrack = RecorderKeyboardTrack(),
                          sourceSize: CGSize,
                          frameRate: Int,
                          duration: Double,
@@ -46,9 +45,7 @@ extension RecorderComposer {
         let needsCanvas = hasBackdrop || fullCanvas != RecorderSupport.evenSize(sourceSize)
         let hasCuts = !document.cuts.isEmpty
         let texts = RecorderTextOverlay.normalized(document.texts, duration: duration)
-        let showsKeystrokes = document.showsKeystrokes && !keyboard.isEmpty
         guard showsPointer || !segments.isEmpty || needsCanvas || hasCuts || !texts.isEmpty
-                || showsKeystrokes
         else { return nil }
 
         // Everything the pointer track knows is in the RECORDING's own time,
@@ -180,16 +177,6 @@ extension RecorderComposer {
             }
         }
 
-        var keystrokeLabels = [[String]](repeating: [], count: frames)
-        var keystrokeOpacity = [Double](repeating: 0, count: frames)
-        if showsKeystrokes {
-            for (index, state) in keyboard.overlays(at: sourceTimes).enumerated() {
-                guard let overlay = state else { continue }
-                keystrokeLabels[index] = overlay.labels
-                keystrokeOpacity[index] = overlay.opacity
-            }
-        }
-
         let corner = hasBackdrop
             ? RecorderSupport.cardCorner(style.cornerRadius, cardSize: card.size)
             : 0
@@ -229,9 +216,7 @@ extension RecorderComposer {
                     plate: plate,
                     mask: mask,
                     texts: texts,
-                    textOpacity: textOpacity,
-                    keystrokeLabels: keystrokeLabels,
-                    keystrokeOpacity: keystrokeOpacity)
+                    textOpacity: textOpacity)
     }
 
     // MARK: - Plate

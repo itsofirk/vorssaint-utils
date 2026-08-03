@@ -3,6 +3,7 @@
 
 import AppKit
 import CoreImage
+import ImageIO
 import UniformTypeIdentifiers
 
 /// Draws annotations into a CGContext. The editor canvas and the exporter
@@ -554,12 +555,21 @@ enum ScreenshotRenderer {
 
     // MARK: - Encoding
 
-    static func pngData(from image: CGImage) -> Data? {
+    static func pngData(from image: CGImage, scale: CGFloat? = nil) -> Data? {
         let data = NSMutableData()
         guard let destination = CGImageDestinationCreateWithData(
             data, UTType.png.identifier as CFString, 1, nil)
         else { return nil }
-        CGImageDestinationAddImage(destination, image, nil)
+        let properties: CFDictionary?
+        if let scale {
+            properties = [
+                kCGImagePropertyDPIWidth: Double(scale) * 72,
+                kCGImagePropertyDPIHeight: Double(scale) * 72,
+            ] as CFDictionary
+        } else {
+            properties = nil
+        }
+        CGImageDestinationAddImage(destination, image, properties)
         guard CGImageDestinationFinalize(destination) else { return nil }
         return data as Data
     }

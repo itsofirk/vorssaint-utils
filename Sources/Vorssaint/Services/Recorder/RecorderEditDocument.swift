@@ -30,6 +30,8 @@ struct RecorderEditDocument: Codable, Equatable {
     var showsClickRing: Bool
     var zoomEnabled: Bool
     var zoomAmount: Double
+    /// Whether automatic click zooms stay on the clicked field while typing.
+    var zoomsOnTyping: Bool
     /// Stretches thrown away from the middle, in the recording's own time.
     var cuts: [RecorderTimeline.Cut]
     /// The lean-ins. Filled once from the clicks when a recording is first
@@ -41,8 +43,6 @@ struct RecorderEditDocument: Codable, Equatable {
     var zoomsGenerated: Bool
     /// Lines of text laid over the recording, in the recording's own time.
     var texts: [RecorderTextOverlay]
-    /// Whether the optional key track recorded with this take is drawn.
-    var showsKeystrokes: Bool
 
     init(trimStart: Double = 0,
          trimEnd: Double = 0,
@@ -58,11 +58,11 @@ struct RecorderEditDocument: Codable, Equatable {
          showsClickRing: Bool = true,
          zoomEnabled: Bool = true,
          zoomAmount: Double = 1.8,
+         zoomsOnTyping: Bool = false,
          cuts: [RecorderTimeline.Cut] = [],
          zoomSegments: [RecorderTimeline.ZoomSegment] = [],
          zoomsGenerated: Bool = false,
-         texts: [RecorderTextOverlay] = [],
-         showsKeystrokes: Bool = true) {
+         texts: [RecorderTextOverlay] = []) {
         self.trimStart = trimStart
         self.trimEnd = trimEnd
         self.quality = quality
@@ -77,11 +77,11 @@ struct RecorderEditDocument: Codable, Equatable {
         self.showsClickRing = showsClickRing
         self.zoomEnabled = zoomEnabled
         self.zoomAmount = zoomAmount
+        self.zoomsOnTyping = zoomsOnTyping
         self.cuts = cuts
         self.zoomSegments = zoomSegments
         self.zoomsGenerated = zoomsGenerated
         self.texts = texts
-        self.showsKeystrokes = showsKeystrokes
     }
 
     /// A document written before these fields existed still opens: every one
@@ -106,13 +106,12 @@ struct RecorderEditDocument: Codable, Equatable {
         showsClickRing = try container.decodeIfPresent(Bool.self, forKey: .showsClickRing) ?? true
         zoomEnabled = try container.decodeIfPresent(Bool.self, forKey: .zoomEnabled) ?? true
         zoomAmount = try container.decodeIfPresent(Double.self, forKey: .zoomAmount) ?? 1.8
+        zoomsOnTyping = try container.decodeIfPresent(Bool.self, forKey: .zoomsOnTyping) ?? false
         cuts = try container.decodeIfPresent([RecorderTimeline.Cut].self, forKey: .cuts) ?? []
         zoomSegments = try container.decodeIfPresent([RecorderTimeline.ZoomSegment].self,
                                                      forKey: .zoomSegments) ?? []
         zoomsGenerated = try container.decodeIfPresent(Bool.self, forKey: .zoomsGenerated) ?? false
         texts = try container.decodeIfPresent([RecorderTextOverlay].self, forKey: .texts) ?? []
-        showsKeystrokes = try container.decodeIfPresent(Bool.self,
-                                                        forKey: .showsKeystrokes) ?? true
     }
 
     // MARK: - Timeline
@@ -143,10 +142,12 @@ struct RecorderEditDocument: Codable, Equatable {
     /// Turning automatic zoom back on is an explicit request to recover the
     /// click-based zooms when the timeline was emptied by mistake.
     func restoringAutomaticZooms(clicks: [RecorderMotion.Click],
+                                 typingTimes: [Double] = [],
                                  duration: Double) -> RecorderEditDocument {
         guard zoomEnabled, zoomSegments.isEmpty else { return self }
         let generated = RecorderTimeline.generatedSegments(
             clicks: clicks,
+            typingTimes: typingTimes,
             duration: duration,
             amount: RecorderSupport.sanitizedZoomAmount(zoomAmount))
         guard !generated.isEmpty else { return self }
@@ -188,7 +189,6 @@ struct RecorderEditDocument: Codable, Equatable {
             next.pointerSmoothing = RecorderMotion.Smoothing.off.rawValue
             next.showsClickRing = false
             next.zoomEnabled = false
-            next.showsKeystrokes = false
         case .clean:
             next.backdrop = ""
             next.aspect = RecorderSupport.Aspect.original.rawValue
@@ -196,7 +196,6 @@ struct RecorderEditDocument: Codable, Equatable {
             next.pointerSmoothing = RecorderMotion.Smoothing.smooth.rawValue
             next.showsClickRing = true
             next.zoomEnabled = true
-            next.showsKeystrokes = true
         case .studio:
             next.backdrop = ScreenshotSupport.BackdropStyle(
                 kind: .preset,
@@ -207,7 +206,6 @@ struct RecorderEditDocument: Codable, Equatable {
             next.pointerSmoothing = RecorderMotion.Smoothing.smooth.rawValue
             next.showsClickRing = true
             next.zoomEnabled = true
-            next.showsKeystrokes = true
         }
         return next
     }
@@ -220,7 +218,6 @@ struct RecorderEditDocument: Codable, Equatable {
             && pointerSmoothing == expected.pointerSmoothing
             && showsClickRing == expected.showsClickRing
             && zoomEnabled == expected.zoomEnabled
-            && showsKeystrokes == expected.showsKeystrokes
     }
 
     var resolvedQuality: RecorderSupport.Quality {
@@ -253,7 +250,6 @@ struct RecorderEditDocument: Codable, Equatable {
             || zoomSegments != other.zoomSegments
             || cuts != other.cuts
             || texts != other.texts
-            || showsKeystrokes != other.showsKeystrokes
     }
 
     /// Whether the finished video would run differently, which is what forces
@@ -318,7 +314,6 @@ struct RecorderEditPreset: Codable, Equatable, Identifiable {
     let showsClickRing: Bool
     let zoomEnabled: Bool
     let zoomAmount: Double
-    let showsKeystrokes: Bool
 
     init(id: UUID = UUID(), name: String, document: RecorderEditDocument) {
         self.id = id
@@ -331,7 +326,6 @@ struct RecorderEditPreset: Codable, Equatable, Identifiable {
         showsClickRing = document.showsClickRing
         zoomEnabled = document.zoomEnabled
         zoomAmount = document.zoomAmount
-        showsKeystrokes = document.showsKeystrokes
     }
 
     func applying(to document: RecorderEditDocument) -> RecorderEditDocument {
@@ -344,7 +338,6 @@ struct RecorderEditPreset: Codable, Equatable, Identifiable {
         next.showsClickRing = showsClickRing
         next.zoomEnabled = zoomEnabled
         next.zoomAmount = zoomAmount
-        next.showsKeystrokes = showsKeystrokes
         return next
     }
 }

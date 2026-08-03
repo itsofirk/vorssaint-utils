@@ -35,6 +35,7 @@ final class ScreenshotSelectionController {
     enum Outcome {
         case captured(Capture)
         case region(RecorderSupport.Region)
+        case scrollingRegion(RecorderSupport.Region)
         case cancelled
         case failed
     }
@@ -46,10 +47,22 @@ final class ScreenshotSelectionController {
     private let includePointer: Bool
     private let showLastRegion: Bool
     private let mode: Mode
+    private let supportsScrollingCapture: Bool
     private var finished = false
     /// Read by the overlays so a late event finds a session that is over.
     fileprivate var isOver: Bool { finished }
     fileprivate var spaceIsDown = false
+    fileprivate var scrollingCaptureEnabled = false {
+        didSet {
+            panels.forEach {
+                $0.overlayView.refreshCaptureGuide()
+                $0.overlayView.needsDisplay = true
+            }
+        }
+    }
+    fileprivate var offersScrollingCapture: Bool {
+        supportsScrollingCapture && mode == .image
+    }
     fileprivate var loupeEnabled = false {
         didSet { panels.forEach { $0.overlayView.refreshPointerState() } }
     }
@@ -74,12 +87,14 @@ final class ScreenshotSelectionController {
          includePointer: Bool,
          showLastRegion: Bool,
          purpose: String? = nil,
-         mode: Mode = .image) {
+         mode: Mode = .image,
+         supportsScrollingCapture: Bool = false) {
         self.freeze = freeze
         self.includePointer = includePointer
         self.showLastRegion = showLastRegion
         self.purpose = purpose
         self.mode = mode
+        self.supportsScrollingCapture = supportsScrollingCapture
     }
 
     func begin(completion: @escaping (Outcome) -> Void) {
@@ -172,6 +187,8 @@ final class ScreenshotSelectionController {
                 }
             case kVK_ANSI_R:
                 self.repeatLastRegion()
+            case _ where Self.isScrollingCaptureKey(event):
+                self.toggleScrollingCapture()
             case _ where Self.isLoupeKey(event):
                 self.toggleLoupe()
             default:
@@ -191,6 +208,20 @@ final class ScreenshotSelectionController {
             return typed == "z"
         }
         return Int(event.keyCode) == kVK_ANSI_Z
+    }
+
+    private static func isScrollingCaptureKey(_ event: NSEvent) -> Bool {
+        guard event.modifierFlags.intersection([.command, .control, .option]).isEmpty
+        else { return false }
+        if let typed = event.charactersIgnoringModifiers?.lowercased(), !typed.isEmpty {
+            return typed == "s"
+        }
+        return Int(event.keyCode) == kVK_ANSI_S
+    }
+
+    private func toggleScrollingCapture() {
+        guard offersScrollingCapture else { return }
+        scrollingCaptureEnabled.toggle()
     }
 
     private func toggleLoupe() {
@@ -260,6 +291,10 @@ final class ScreenshotSelectionController {
             finish(.region(region(fromView: viewRect, on: panel, windowID: nil)))
             return
         }
+        if scrollingCaptureEnabled {
+            finish(.scrollingRegion(region(fromView: viewRect, on: panel, windowID: nil)))
+            return
+        }
         let pixelRect = ScreenshotSupport.imagePixelRect(
             fromView: viewRect,
             viewSize: panel.screenFrame.size,
@@ -291,6 +326,10 @@ final class ScreenshotSelectionController {
         markCapturePending()
         if mode == .geometry {
             finish(.region(region(fromView: frame, on: panel, windowID: windowID)))
+            return
+        }
+        if scrollingCaptureEnabled {
+            finish(.scrollingRegion(region(fromView: frame, on: panel, windowID: windowID)))
             return
         }
         Task { @MainActor [weak self] in
@@ -489,6 +528,8 @@ private final class ScreenshotOverlayView: NSView {
     /// while the window server still delivers the tail of a gesture here.
     private weak var controller: ScreenshotSelectionController?
     private weak var panel: ScreenshotOverlayPanel?
+    private let strings: ScreenshotFeatureStrings
+    private let purpose: String?
     private let guideHost: PassThroughHostingView<CaptureGuideView>
 
     private var dragOrigin: CGPoint?
@@ -531,9 +572,13 @@ private final class ScreenshotOverlayView: NSView {
         self.windows = windows
         self.controller = controller
         self.panel = panel
+        self.strings = strings
+        self.purpose = purpose
         guideHost = PassThroughHostingView(rootView: CaptureGuideView(
             strings: strings,
-            purpose: purpose))
+            purpose: purpose,
+            offersScrollingCapture: controller.offersScrollingCapture,
+            scrollingCaptureEnabled: controller.scrollingCaptureEnabled))
         super.init(frame: frame)
         let tracking = NSTrackingArea(rect: .zero,
                                       options: [.activeAlways, .mouseMoved, .mouseEnteredAndExited,
@@ -574,6 +619,14 @@ private final class ScreenshotOverlayView: NSView {
     func updateLoupeImage(_ image: CGImage?) {
         loupeImage = image
         needsDisplay = true
+    }
+
+    func refreshCaptureGuide() {
+        guideHost.rootView = CaptureGuideView(
+            strings: strings,
+            purpose: purpose,
+            offersScrollingCapture: controller?.offersScrollingCapture ?? false,
+            scrollingCaptureEnabled: controller?.scrollingCaptureEnabled ?? false)
     }
 
     // MARK: Mouse
@@ -867,6 +920,8 @@ private final class PassThroughHostingView<Content: View>: NSHostingView<Content
 private struct CaptureGuideView: View {
     let strings: ScreenshotFeatureStrings
     let purpose: String?
+    let offersScrollingCapture: Bool
+    let scrollingCaptureEnabled: Bool
 
     var body: some View {
         HStack(spacing: 12) {
@@ -889,6 +944,10 @@ private struct CaptureGuideView: View {
             Spacer(minLength: 8)
             HStack(spacing: 7) {
                 keyHint("↩", icon: "rectangle.inset.filled")
+                if offersScrollingCapture {
+                    keyHint(scrollingCaptureEnabled ? "S on" : "S",
+                            icon: "rectangle.stack")
+                }
                 keyHint("Z", icon: "plus.magnifyingglass")
                 keyHint("esc", icon: "xmark")
             }
@@ -911,8 +970,14 @@ private struct CaptureGuideView: View {
     }
 
     private var subtitle: String {
-        guard purpose?.isEmpty == false else { return strings.hintClick }
-        return strings.hintDrag + "  ·  " + strings.hintClick
+        let base = purpose?.isEmpty == false
+            ? strings.hintDrag + "  ·  " + strings.hintClick
+            : strings.hintClick
+        guard offersScrollingCapture else { return base }
+        let scrolling = scrollingCaptureEnabled
+            ? strings.scrollingCaptureHintOn
+            : strings.scrollingCaptureHintOff
+        return base + "  ·  " + scrolling
     }
 
     private func keyHint(_ key: String, icon: String) -> some View {

@@ -95,6 +95,8 @@ final class WindowLayoutService: ObservableObject {
     }
 
     func shortcutConflictTitle(_ shortcut: GlobalShortcut, excluding excluded: WindowLayoutAction?) -> String? {
+        guard AppFeature.windowLayout.isAvailable,
+              UserDefaults.standard.bool(forKey: DefaultsKey.windowLayoutShortcutsEnabled) else { return nil }
         let text = FeatureStrings.windowLayout(L10n.shared.language)
         return WindowLayoutAction.shortcutActions.first {
             $0 != excluded && $0.savedShortcut == shortcut

@@ -900,8 +900,9 @@ struct SwitcherSettings: View {
                     .onChange(of: previewSize) { _, _ in
                         AppSwitcher.shared.syncWithPreferences()
                     }
+                    WindowPreviewExclusionsList()
                 } header: {
-                    Text(l10n.s.previewSizeLabel)
+                    Text(FeatureStrings.windowPreviewExclusions(l10n.language).sectionTitle)
                 }
             }
             if switcherEngaged || dockPreviewEngaged {

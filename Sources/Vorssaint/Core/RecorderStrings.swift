@@ -105,12 +105,11 @@ struct RecorderFeatureStrings {
     let savePreset: String
     let presetNamePlaceholder: String
     let removePreset: String
-    let keystrokesToggle: String
-    let keystrokesCaption: String
-    let keystrokesSectionLabel: String
     let zoomEmptyTitle: String
     let zoomEmptyCaption: String
     let createAutomaticZooms: String
+    let typingZoomToggle: String
+    let typingZoomCaption: String
 }
 
 extension FeatureStrings {
@@ -235,12 +234,11 @@ extension RecorderFeatureStrings {
         savePreset: "Save current preset…",
         presetNamePlaceholder: "Preset name",
         removePreset: "Remove preset",
-        keystrokesToggle: "Show pressed keys",
-        keystrokesCaption: "Anything you type can appear in the video. This stays off until you turn it on.",
-        keystrokesSectionLabel: "Keys",
         zoomEmptyTitle: "No zooms yet",
         zoomEmptyCaption: "Create them from your clicks or add one on the timeline.",
-        createAutomaticZooms: "Create automatic zooms"
+        createAutomaticZooms: "Create automatic zooms",
+        typingZoomToggle: "Keep zoomed in while typing",
+        typingZoomCaption: "After a click, typing keeps the automatic zoom on that spot.",
     )
 
     static let ptBR = RecorderFeatureStrings(
@@ -344,12 +342,11 @@ extension RecorderFeatureStrings {
         savePreset: "Salvar predefinição atual…",
         presetNamePlaceholder: "Nome da predefinição",
         removePreset: "Remover predefinição",
-        keystrokesToggle: "Mostrar teclas pressionadas",
-        keystrokesCaption: "Tudo o que você digitar pode aparecer no vídeo. Esta opção fica desligada até você ativá-la.",
-        keystrokesSectionLabel: "Teclas",
         zoomEmptyTitle: "Nenhum zoom ainda",
         zoomEmptyCaption: "Crie a partir dos seus cliques ou adicione um na linha do tempo.",
-        createAutomaticZooms: "Criar zooms automáticos"
+        createAutomaticZooms: "Criar zooms automáticos",
+        typingZoomToggle: "Manter o zoom ao digitar",
+        typingZoomCaption: "Depois de um clique, a digitação mantém o zoom automático naquele ponto.",
     )
 
     static let tr = RecorderFeatureStrings(
@@ -453,12 +450,11 @@ extension RecorderFeatureStrings {
         savePreset: "Geçerli hazır ayarı kaydet…",
         presetNamePlaceholder: "Hazır ayar adı",
         removePreset: "Hazır ayarı kaldır",
-        keystrokesToggle: "Basılan tuşları göster",
-        keystrokesCaption: "Yazdığınız her şey videoda görünebilir. Siz açana kadar kapalı kalır.",
-        keystrokesSectionLabel: "Tuşlar",
         zoomEmptyTitle: "Henüz yakınlaştırma yok",
         zoomEmptyCaption: "Tıklamalarınızdan oluşturun veya zaman çizelgesine bir tane ekleyin.",
-        createAutomaticZooms: "Otomatik yakınlaştırmalar oluştur"
+        createAutomaticZooms: "Otomatik yakınlaştırmalar oluştur",
+        typingZoomToggle: "Yazarken yakınlaştırmayı koru",
+        typingZoomCaption: "Bir tıklamadan sonra yazmak, otomatik yakınlaştırmayı o noktada tutar.",
     )
 
     static let ru = RecorderFeatureStrings(
@@ -562,12 +558,11 @@ extension RecorderFeatureStrings {
         savePreset: "Сохранить текущую предустановку…",
         presetNamePlaceholder: "Название предустановки",
         removePreset: "Удалить предустановку",
-        keystrokesToggle: "Показывать нажатые клавиши",
-        keystrokesCaption: "Все, что вы вводите, может появиться в видео. Эта функция выключена, пока вы ее не включите.",
-        keystrokesSectionLabel: "Клавиши",
         zoomEmptyTitle: "Масштабов пока нет",
         zoomEmptyCaption: "Создайте их из нажатий или добавьте один на шкалу времени.",
-        createAutomaticZooms: "Создать автоматические масштабы"
+        createAutomaticZooms: "Создать автоматические масштабы",
+        typingZoomToggle: "Сохранять масштаб при наборе",
+        typingZoomCaption: "После щелчка набор текста удерживает автоматический масштаб в этой точке.",
     )
 
     static let es = RecorderFeatureStrings(
@@ -671,12 +666,11 @@ extension RecorderFeatureStrings {
         savePreset: "Guardar preajuste actual…",
         presetNamePlaceholder: "Nombre del preajuste",
         removePreset: "Eliminar preajuste",
-        keystrokesToggle: "Mostrar las teclas pulsadas",
-        keystrokesCaption: "Todo lo que escribas puede aparecer en el vídeo. Esta opción permanece desactivada hasta que la actives.",
-        keystrokesSectionLabel: "Teclas",
         zoomEmptyTitle: "Aún no hay zooms",
         zoomEmptyCaption: "Créelos a partir de tus clics o añade uno a la línea de tiempo.",
-        createAutomaticZooms: "Crear zooms automáticos"
+        createAutomaticZooms: "Crear zooms automáticos",
+        typingZoomToggle: "Mantener el zoom al escribir",
+        typingZoomCaption: "Después de un clic, escribir mantiene el zoom automático en ese punto.",
     )
 
     static let de = RecorderFeatureStrings(
@@ -780,12 +774,11 @@ extension RecorderFeatureStrings {
         savePreset: "Aktuelle Voreinstellung sichern…",
         presetNamePlaceholder: "Name der Voreinstellung",
         removePreset: "Voreinstellung entfernen",
-        keystrokesToggle: "Gedrückte Tasten anzeigen",
-        keystrokesCaption: "Alles, was du eingibst, kann im Video erscheinen. Diese Option bleibt aus, bis du sie einschaltest.",
-        keystrokesSectionLabel: "Tasten",
         zoomEmptyTitle: "Noch keine Zooms",
         zoomEmptyCaption: "Erstelle sie aus deinen Klicks oder füge einen zur Zeitleiste hinzu.",
-        createAutomaticZooms: "Automatische Zooms erstellen"
+        createAutomaticZooms: "Automatische Zooms erstellen",
+        typingZoomToggle: "Beim Tippen eingezoomt bleiben",
+        typingZoomCaption: "Nach einem Klick hält das Tippen den automatischen Zoom an dieser Stelle.",
     )
 
     static let fr = RecorderFeatureStrings(
@@ -889,12 +882,11 @@ extension RecorderFeatureStrings {
         savePreset: "Enregistrer le préréglage actuel…",
         presetNamePlaceholder: "Nom du préréglage",
         removePreset: "Supprimer le préréglage",
-        keystrokesToggle: "Afficher les touches pressées",
-        keystrokesCaption: "Tout ce que vous saisissez peut apparaître dans la vidéo. Cette option reste désactivée jusqu’à ce que vous l’activiez.",
-        keystrokesSectionLabel: "Touches",
         zoomEmptyTitle: "Aucun zoom pour le moment",
         zoomEmptyCaption: "Créez-les à partir de vos clics ou ajoutez-en un à la chronologie.",
-        createAutomaticZooms: "Créer des zooms automatiques"
+        createAutomaticZooms: "Créer des zooms automatiques",
+        typingZoomToggle: "Garder le zoom pendant la saisie",
+        typingZoomCaption: "Après un clic, la saisie maintient le zoom automatique sur cet endroit.",
     )
 
     static let it = RecorderFeatureStrings(
@@ -998,12 +990,11 @@ extension RecorderFeatureStrings {
         savePreset: "Salva preset attuale…",
         presetNamePlaceholder: "Nome del preset",
         removePreset: "Rimuovi preset",
-        keystrokesToggle: "Mostra i tasti premuti",
-        keystrokesCaption: "Tutto ciò che digiti può apparire nel video. Questa opzione resta disattivata finché non la attivi.",
-        keystrokesSectionLabel: "Tasti",
         zoomEmptyTitle: "Nessuno zoom",
         zoomEmptyCaption: "Creali dai tuoi clic o aggiungine uno alla timeline.",
-        createAutomaticZooms: "Crea zoom automatici"
+        createAutomaticZooms: "Crea zoom automatici",
+        typingZoomToggle: "Mantieni lo zoom mentre scrivi",
+        typingZoomCaption: "Dopo un clic, la digitazione mantiene lo zoom automatico su quel punto.",
     )
 
     static let ja = RecorderFeatureStrings(
@@ -1107,12 +1098,11 @@ extension RecorderFeatureStrings {
         savePreset: "現在のプリセットを保存…",
         presetNamePlaceholder: "プリセット名",
         removePreset: "プリセットを削除",
-        keystrokesToggle: "押したキーを表示",
-        keystrokesCaption: "入力した内容が動画に表示される場合があります。この設定は有効にするまでオフです。",
-        keystrokesSectionLabel: "キー",
         zoomEmptyTitle: "ズームはまだありません",
         zoomEmptyCaption: "クリックから作成するか、タイムラインに追加してください。",
-        createAutomaticZooms: "自動ズームを作成"
+        createAutomaticZooms: "自動ズームを作成",
+        typingZoomToggle: "入力中はズームを維持",
+        typingZoomCaption: "クリック後に入力すると、その位置の自動ズームが続きます。",
     )
 
     static let ko = RecorderFeatureStrings(
@@ -1216,12 +1206,11 @@ extension RecorderFeatureStrings {
         savePreset: "현재 프리셋 저장…",
         presetNamePlaceholder: "프리셋 이름",
         removePreset: "프리셋 제거",
-        keystrokesToggle: "누른 키 표시",
-        keystrokesCaption: "입력한 내용이 영상에 표시될 수 있습니다. 직접 켜기 전까지 꺼져 있습니다.",
-        keystrokesSectionLabel: "키",
         zoomEmptyTitle: "아직 확대 없음",
         zoomEmptyCaption: "클릭으로 만들거나 타임라인에 하나를 추가하세요.",
-        createAutomaticZooms: "자동 확대 만들기"
+        createAutomaticZooms: "자동 확대 만들기",
+        typingZoomToggle: "입력하는 동안 확대 유지",
+        typingZoomCaption: "클릭 후 입력하면 자동 확대가 그 위치에 유지됩니다.",
     )
 
     static let zhHans = RecorderFeatureStrings(
@@ -1325,12 +1314,11 @@ extension RecorderFeatureStrings {
         savePreset: "保存当前预设…",
         presetNamePlaceholder: "预设名称",
         removePreset: "移除预设",
-        keystrokesToggle: "显示按下的按键",
-        keystrokesCaption: "你输入的任何内容都可能出现在视频中。此选项在你开启前会保持关闭。",
-        keystrokesSectionLabel: "按键",
         zoomEmptyTitle: "还没有缩放",
         zoomEmptyCaption: "根据点击创建，或在时间线上添加一个。",
-        createAutomaticZooms: "创建自动缩放"
+        createAutomaticZooms: "创建自动缩放",
+        typingZoomToggle: "输入时保持缩放",
+        typingZoomCaption: "点击后继续输入，会让自动缩放停留在该位置。",
     )
 
     static let zhTW = RecorderFeatureStrings(
@@ -1434,12 +1422,11 @@ extension RecorderFeatureStrings {
         savePreset: "儲存目前的預設組合…",
         presetNamePlaceholder: "預設組合名稱",
         removePreset: "移除預設組合",
-        keystrokesToggle: "顯示按下的按鍵",
-        keystrokesCaption: "你輸入的任何內容都可能出現在影片中。此選項在你開啟前會保持關閉。",
-        keystrokesSectionLabel: "按鍵",
         zoomEmptyTitle: "還沒有縮放",
         zoomEmptyCaption: "根據點按建立，或在時間軸上加入一個。",
-        createAutomaticZooms: "建立自動縮放"
+        createAutomaticZooms: "建立自動縮放",
+        typingZoomToggle: "輸入時保持縮放",
+        typingZoomCaption: "點按後繼續輸入，會讓自動縮放停留在該位置。",
     )
 
     static let zhHK = RecorderFeatureStrings(
@@ -1543,11 +1530,10 @@ extension RecorderFeatureStrings {
         savePreset: "儲存目前的預設組合…",
         presetNamePlaceholder: "預設組合名稱",
         removePreset: "移除預設組合",
-        keystrokesToggle: "顯示按下的按鍵",
-        keystrokesCaption: "你輸入的任何內容都可能出現在影片中。此選項在你開啟前會保持關閉。",
-        keystrokesSectionLabel: "按鍵",
         zoomEmptyTitle: "還沒有縮放",
         zoomEmptyCaption: "根據點按建立，或在時間軸上加入一個。",
-        createAutomaticZooms: "建立自動縮放"
+        createAutomaticZooms: "建立自動縮放",
+        typingZoomToggle: "輸入時保持縮放",
+        typingZoomCaption: "點按後繼續輸入，會讓自動縮放停留在該位置。",
     )
 }

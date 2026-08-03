@@ -54,10 +54,6 @@ struct RecorderInspector: View {
                                 .foregroundStyle(.secondary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
-                        if model.hasKeyboardTrack {
-                            Divider().opacity(0.35)
-                            keyboardSection
-                        }
                     case .zoom:
                         zoomSection
                     }
@@ -519,15 +515,6 @@ struct RecorderInspector: View {
         }
     }
 
-    private var keyboardSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            sectionTitle(strings.keystrokesSectionLabel)
-            Toggle(strings.keystrokesToggle, isOn: boolBinding(\.showsKeystrokes))
-                .toggleStyle(.switch)
-                .controlSize(.mini)
-        }
-    }
-
     // MARK: - Zoom
 
     private var zoomSection: some View {
@@ -541,6 +528,17 @@ struct RecorderInspector: View {
                     .controlSize(.mini)
             }
             if model.document.zoomEnabled {
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle(strings.typingZoomToggle, isOn: Binding(
+                        get: { model.document.zoomsOnTyping },
+                        set: model.setTypingZoomEnabled))
+                        .toggleStyle(.switch)
+                        .controlSize(.mini)
+                    Text(strings.typingZoomCaption)
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if model.document.zoomSegments.isEmpty {
                     zoomEmptyState
                 } else {
@@ -654,4 +652,5 @@ struct RecorderInspector: View {
                     model.document = next
                 })
     }
+
 }

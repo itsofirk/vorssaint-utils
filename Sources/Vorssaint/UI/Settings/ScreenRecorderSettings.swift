@@ -21,7 +21,6 @@ struct ScreenRecorderSettings: View {
     @AppStorage(DefaultsKey.recorderGIFSize) private var gifSizeRaw =
         RecorderSupport.GIFSize.medium.rawValue
     @AppStorage(DefaultsKey.recorderGIFFrameRate) private var gifFrameRate = 12
-    @AppStorage(DefaultsKey.recorderShowKeystrokes) private var showsKeystrokes = false
     @State private var showsMoreOptions = false
 
     private var strings: RecorderFeatureStrings {
@@ -59,6 +58,9 @@ struct ScreenRecorderSettings: View {
                 if !permissions.screenRecording {
                     PermissionRow(kind: .screenRecording)
                 }
+                if !permissions.accessibility {
+                    PermissionRow(kind: .accessibility)
+                }
             } header: {
                 Text(strings.pageTitle)
             }
@@ -75,16 +77,6 @@ struct ScreenRecorderSettings: View {
                 }
                 .pickerStyle(.segmented)
                 VStack(alignment: .leading, spacing: 4) {
-                    Picker(strings.qualityLabel, selection: $qualityRaw) {
-                        Text(strings.qualitySmall).tag(RecorderSupport.Quality.small.rawValue)
-                        Text(strings.qualityBalanced).tag(RecorderSupport.Quality.balanced.rawValue)
-                        Text(strings.qualityHigh).tag(RecorderSupport.Quality.high.rawValue)
-                    }
-                    Text(strings.qualityCaption)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                VStack(alignment: .leading, spacing: 4) {
                     Toggle(strings.systemAudioToggle, isOn: $systemAudio)
                     Text(strings.systemAudioCaption)
                         .font(.caption)
@@ -96,23 +88,21 @@ struct ScreenRecorderSettings: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                VStack(alignment: .leading, spacing: 4) {
-                    Toggle(strings.keystrokesToggle, isOn: $showsKeystrokes)
-                        .onChange(of: showsKeystrokes) { _, enabled in
-                            if enabled { permissions.requestAccessibility() }
-                        }
-                    Text(strings.keystrokesCaption)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    if showsKeystrokes, !permissions.accessibility {
-                        PermissionRow(kind: .accessibility)
-                    }
-                }
             }
 
             Section {
                 folderRow
                 DisclosureGroup(strings.moreOptions, isExpanded: $showsMoreOptions) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Picker(strings.qualityLabel, selection: $qualityRaw) {
+                            Text(strings.qualitySmall).tag(RecorderSupport.Quality.small.rawValue)
+                            Text(strings.qualityBalanced).tag(RecorderSupport.Quality.balanced.rawValue)
+                            Text(strings.qualityHigh).tag(RecorderSupport.Quality.high.rawValue)
+                        }
+                        Text(strings.qualityCaption)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     Picker(strings.frameRateLabel, selection: $frameRate) {
                         ForEach(RecorderSupport.frameRates, id: \.self) { rate in
                             Text(String(format: strings.frameRateFormat, rate)).tag(rate)

@@ -893,6 +893,8 @@ extension Strings {
         switcherMinimizedPlacementHidden: "隐藏",
         switcherShowFullscreenWindows: "显示全屏窗口",
         shelfFileMissing: "文件已不存在",
-        previewSizeSmall: "小"
+        previewSizeSmall: "小",
+        mixerSoundEffectsOutputTitle: "系统声音",
+        mixerSoundEffectsOutputTooltip: "选择提醒和音效的播放设备"
     )
 }

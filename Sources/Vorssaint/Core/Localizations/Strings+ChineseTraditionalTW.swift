@@ -894,6 +894,8 @@ extension Strings {
         switcherMinimizedPlacementHidden: "隱藏",
         switcherShowFullscreenWindows: "顯示全螢幕視窗",
         shelfFileMissing: "檔案已不存在",
-        previewSizeSmall: "小"
+        previewSizeSmall: "小",
+        mixerSoundEffectsOutputTitle: "系統聲音",
+        mixerSoundEffectsOutputTooltip: "選擇提示音與音效的播放裝置"
     )
 }

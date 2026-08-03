@@ -893,6 +893,8 @@ extension Strings {
         switcherMinimizedPlacementHidden: "Ocultar",
         switcherShowFullscreenWindows: "Mostrar ventanas en pantalla completa",
         shelfFileMissing: "El archivo ya no existe",
-        previewSizeSmall: "Pequeño"
+        previewSizeSmall: "Pequeño",
+        mixerSoundEffectsOutputTitle: "Sonidos del sistema",
+        mixerSoundEffectsOutputTooltip: "Elegir dónde se reproducen los avisos y efectos de sonido"
     )
 }

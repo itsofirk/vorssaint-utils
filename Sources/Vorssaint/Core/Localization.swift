@@ -1038,6 +1038,8 @@ struct Strings {
     let switcherShowFullscreenWindows: String
     let shelfFileMissing: String
     let previewSizeSmall: String
+    let mixerSoundEffectsOutputTitle: String
+    let mixerSoundEffectsOutputTooltip: String
 }
 
 // MARK: - Português (Brasil)
@@ -1932,7 +1934,9 @@ extension Strings {
         switcherMinimizedPlacementHidden: "Ocultar",
         switcherShowFullscreenWindows: "Mostrar janelas em tela cheia",
         shelfFileMissing: "O arquivo não existe mais",
-        previewSizeSmall: "Pequeno"
+        previewSizeSmall: "Pequeno",
+        mixerSoundEffectsOutputTitle: "Sons do sistema",
+        mixerSoundEffectsOutputTooltip: "Escolher onde alertas e efeitos sonoros tocam"
     )
 }
 
@@ -2828,6 +2832,8 @@ extension Strings {
         switcherMinimizedPlacementHidden: "Hide",
         switcherShowFullscreenWindows: "Show fullscreen windows",
         shelfFileMissing: "The file no longer exists",
-        previewSizeSmall: "Small"
+        previewSizeSmall: "Small",
+        mixerSoundEffectsOutputTitle: "System sounds",
+        mixerSoundEffectsOutputTooltip: "Choose where alerts and sound effects play"
     )
 }

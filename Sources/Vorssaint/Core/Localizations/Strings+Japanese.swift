@@ -893,6 +893,8 @@ extension Strings {
         switcherMinimizedPlacementHidden: "非表示",
         switcherShowFullscreenWindows: "フルスクリーンのウインドウを表示",
         shelfFileMissing: "ファイルはもう存在しません",
-        previewSizeSmall: "小"
+        previewSizeSmall: "小",
+        mixerSoundEffectsOutputTitle: "システムサウンド",
+        mixerSoundEffectsOutputTooltip: "通知音とサウンドエフェクトの出力先を選択"
     )
 }

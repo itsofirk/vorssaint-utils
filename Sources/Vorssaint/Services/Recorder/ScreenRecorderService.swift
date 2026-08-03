@@ -13,7 +13,7 @@ private final class RecorderSession: NSObject, RecorderCaptureEngineDelegate {
     let region: RecorderSupport.Region
     private let engine = RecorderCaptureEngine()
     private let pointer: RecorderPointerSampler
-    private let keyboard: RecorderKeystrokeSampler?
+    private let typing = RecorderTypingSampler()
     /// Immutable for the whole session, which is what makes it safe to touch
     /// from the capture queue while the main thread watches the clock.
     private let writer: RecorderWriter
@@ -23,8 +23,7 @@ private final class RecorderSession: NSObject, RecorderCaptureEngineDelegate {
     init?(take: RecorderTakeStore.Take,
           region: RecorderSupport.Region,
           frameRate: Int,
-          capturesSystemAudio: Bool,
-          capturesKeystrokes: Bool) {
+          capturesSystemAudio: Bool) {
         guard let writer = RecorderWriter(url: take.videoURL,
                                           pixelSize: region.pixelSize,
                                           frameRate: frameRate,
@@ -34,7 +33,6 @@ private final class RecorderSession: NSObject, RecorderCaptureEngineDelegate {
         self.region = region
         self.writer = writer
         pointer = RecorderPointerSampler(region: region)
-        keyboard = capturesKeystrokes ? RecorderKeystrokeSampler() : nil
         super.init()
         engine.delegate = self
     }
@@ -51,7 +49,7 @@ private final class RecorderSession: NSObject, RecorderCaptureEngineDelegate {
             return failure
         }
         pointer.start()
-        keyboard?.start()
+        typing.start()
         return nil
     }
 
@@ -60,14 +58,14 @@ private final class RecorderSession: NSObject, RecorderCaptureEngineDelegate {
     func stop() async -> Bool {
         await engine.stop()
         let track = pointer.stop()
-        let keyboardTrack = keyboard?.stop() ?? RecorderKeyboardTrack()
+        let typingTrack = typing.stop()
         let end = CMClockGetTime(CMClockGetHostTimeClock())
         let written = await writer.finish(at: end)
         if written, !track.isEmpty {
             try? track.encoded().write(to: take.pointerURL, options: .atomic)
         }
-        if written, !keyboardTrack.isEmpty, let data = keyboardTrack.encoded() {
-            try? data.write(to: take.keyboardURL, options: .atomic)
+        if written, !typingTrack.isEmpty, let data = typingTrack.encoded() {
+            try? data.write(to: take.typingURL, options: .atomic)
         }
         return written
     }
@@ -75,7 +73,7 @@ private final class RecorderSession: NSObject, RecorderCaptureEngineDelegate {
     func abandon() async {
         await engine.stop()
         _ = pointer.stop()
-        _ = keyboard?.stop()
+        _ = typing.stop()
         writer.cancel()
     }
 
@@ -201,6 +199,10 @@ final class ScreenRecorderService: ObservableObject {
             Permissions.shared.requestScreenRecording()
             return
         }
+        guard Permissions.shared.accessibility else {
+            Permissions.shared.requestAccessibility()
+            return
+        }
         guard RecorderSupport.canStart(freeBytes: RecorderTakeStore.shared.freeBytes()) else {
             reportNoSpace()
             return
@@ -224,7 +226,7 @@ final class ScreenRecorderService: ObservableObject {
             switch outcome {
             case .region(let region):
                 self.startCountdown(for: region)
-            case .captured, .cancelled:
+            case .captured, .scrollingRegion, .cancelled:
                 break
             case .failed:
                 QuickToolHUD.show(icon: "record.circle", message: self.strings.recordFailed)
@@ -272,14 +274,10 @@ final class ScreenRecorderService: ObservableObject {
         let frameRate = RecorderSupport.sanitizedFrameRate(
             defaults.integer(forKey: DefaultsKey.recorderFrameRate))
         let capturesSystemAudio = defaults.bool(forKey: DefaultsKey.recorderSystemAudio)
-        let capturesKeystrokes = defaults.bool(forKey: DefaultsKey.recorderShowKeystrokes)
-            && Permissions.shared.accessibility
-
         guard let session = RecorderSession(take: take,
                                             region: region,
                                             frameRate: frameRate,
-                                            capturesSystemAudio: capturesSystemAudio,
-                                            capturesKeystrokes: capturesKeystrokes) else {
+                                            capturesSystemAudio: capturesSystemAudio) else {
             RecorderTakeStore.shared.delete(take)
             QuickToolHUD.show(icon: "record.circle", message: strings.recordFailed)
             return

@@ -56,8 +56,6 @@ final class RecorderComposer {
         /// once like everything else, so a frame is a lookup.
         let texts: [RecorderTextOverlay]
         let textOpacity: [[Double]]
-        let keystrokeLabels: [[String]]
-        let keystrokeOpacity: [Double]
     }
 
     private let plan: Plan
@@ -105,22 +103,7 @@ final class RecorderComposer {
             content = content.composited(over: plate)
         }
         content = drawTexts(on: content, index: index)
-        content = drawKeystrokes(on: content, index: index)
         return content.cropped(to: CGRect(origin: .zero, size: plan.canvasSize))
-    }
-
-    private func drawKeystrokes(on content: CIImage, index: Int) -> CIImage {
-        guard plan.keystrokeLabels.indices.contains(index),
-              plan.keystrokeOpacity.indices.contains(index),
-              plan.keystrokeOpacity[index] > 0.01,
-              let image = RecorderKeystrokeRenderer.image(
-                labels: plan.keystrokeLabels[index], canvasHeight: plan.canvasSize.height)
-        else { return content }
-        let x = (plan.canvasSize.width - CGFloat(image.width)) / 2
-        let y = max(18, plan.canvasSize.height * 0.055)
-        return faded(CIImage(cgImage: image), opacity: plan.keystrokeOpacity[index])
-            .transformed(by: CGAffineTransform(translationX: x, y: y))
-            .composited(over: content)
     }
 
     /// Text sits on top of everything, including the background and the zoom:

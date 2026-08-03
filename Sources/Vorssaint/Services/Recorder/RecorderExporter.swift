@@ -61,7 +61,6 @@ final class RecorderExporter {
             return await exportVideo(asset: asset,
                                      videoTrack: videoTrack,
                                      pointerURL: take.pointerURL,
-                                     keyboardURL: take.keyboardURL,
                                      document: document,
                                      trim: trim,
                                      sourceSize: sourceSize,
@@ -72,7 +71,6 @@ final class RecorderExporter {
             return await exportGIF(asset: asset,
                                    videoTrack: videoTrack,
                                    pointerURL: take.pointerURL,
-                                   keyboardURL: take.keyboardURL,
                                    document: document,
                                    sourceSize: sourceSize,
                                    to: destination,
@@ -85,7 +83,6 @@ final class RecorderExporter {
     private func exportVideo(asset: AVURLAsset,
                              videoTrack: AVAssetTrack,
                              pointerURL: URL,
-                             keyboardURL: URL,
                              document: RecorderEditDocument,
                              trim: RecorderSupport.Trim,
                              sourceSize: CGSize,
@@ -94,7 +91,6 @@ final class RecorderExporter {
                              progress: @escaping (Double) -> Void) async -> Failure? {
         let duration = CMTimeGetSeconds((try? await asset.load(.duration)) ?? .zero)
         let track = RecorderPointerTrack.decoded(try? Data(contentsOf: pointerURL))
-        let keyboard = RecorderKeyboardTrack.decoded(try? Data(contentsOf: keyboardURL))
         // The trim and the cuts become one continuous asset first, so the
         // reader never has to know that a piece was taken out of the middle.
         let ranges = document.keptRanges(duration: duration)
@@ -110,7 +106,6 @@ final class RecorderExporter {
         // resampled afterwards.
         let plan = RecorderComposer.makePlan(document: document,
                                              track: track,
-                                             keyboard: keyboard,
                                              sourceSize: sourceSize,
                                              frameRate: frameRate,
                                              duration: duration,
@@ -317,7 +312,6 @@ final class RecorderExporter {
     private func exportGIF(asset: AVURLAsset,
                            videoTrack: AVAssetTrack,
                            pointerURL: URL,
-                           keyboardURL: URL,
                            document: RecorderEditDocument,
                            sourceSize: CGSize,
                            to destination: URL,
@@ -345,10 +339,8 @@ final class RecorderExporter {
         // a smoothed pointer are in it too.
         let frameRate = Int(((try? await videoTrack.load(.nominalFrameRate)) ?? 60).rounded())
         let track = RecorderPointerTrack.decoded(try? Data(contentsOf: pointerURL))
-        let keyboard = RecorderKeyboardTrack.decoded(try? Data(contentsOf: keyboardURL))
         let plan = RecorderComposer.makePlan(document: document,
                                              track: track,
-                                             keyboard: keyboard,
                                              sourceSize: sourceSize,
                                              frameRate: RecorderSupport.sanitizedFrameRate(frameRate),
                                              duration: duration)

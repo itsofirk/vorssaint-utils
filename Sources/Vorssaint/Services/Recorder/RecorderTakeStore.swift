@@ -20,7 +20,7 @@ final class RecorderTakeStore {
 
         var videoURL: URL { folder.appendingPathComponent(RecorderSupport.takeVideoName) }
         var pointerURL: URL { folder.appendingPathComponent(RecorderSupport.takePointerName) }
-        var keyboardURL: URL { folder.appendingPathComponent(RecorderSupport.takeKeyboardName) }
+        var typingURL: URL { folder.appendingPathComponent(RecorderSupport.takeTypingName) }
         var editURL: URL { folder.appendingPathComponent(RecorderSupport.takeEditName) }
     }
 

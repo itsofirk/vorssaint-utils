@@ -57,7 +57,7 @@ The rest bends the same way: panel sections reorder and hide, the compact layout
 
 ### Sound
 
-- **Volume mixer.** Slide any single app up or down while the rest of the Mac stays put, and push a quiet one past 100 percent when a video is just too low. Hide the apps you never adjust to keep the list short. No audio driver, no setup.
+- **Volume mixer.** Adjust the Mac's overall volume or slide any single app up or down, and push a quiet one past 100 percent when a video is just too low. Send system sounds through another output, or hide the apps you never adjust to keep the list short. No audio driver, no setup.
 - **Per app output.** Send your music to the speakers and a call to your headset at the same time.
 - **Output switcher.** Cycle between chosen outputs with one shortcut, and drop the volume automatically when headphones disconnect.
 - **Microphone tools.** Pin your favorite input so the Mac stops guessing, and mute every microphone at once with a click or shortcut, whichever one an app is using.
@@ -72,7 +72,7 @@ The rest bends the same way: panel sections reorder and hide, the compact layout
 
 ### Windows and the Dock
 
-- **App switcher.** A richer take on pressing ⌘Tab, with adjustable live window thumbnails, minimized windows included, and more than one window per app.
+- **App switcher.** A richer take on pressing ⌘Tab, with adjustable live window thumbnails, minimized windows included, and more than one window per app. Choose apps where Vorssaint pauses both switcher and Dock thumbnail capture while they are in front.
 - **Window layout.** Snap the active window to halves, thirds, sixths, corners, center or another display, each with its own optional shortcut. Restore steps back through recent placements. On a trackpad or mouse, hold chosen modifiers and drag anywhere to move a window, then add Shift to resize it. A mouse can also resize with the right button.
 - **Dock Preview.** Hover a Dock icon to peek at that app's windows and jump straight into the right one.
 - **Dock clicks.** Click the Dock icon of the active app to minimize its windows, or cycle through them one by one.
@@ -100,7 +100,7 @@ The rest bends the same way: panel sections reorder and hide, the compact layout
 - **Clipboard history.** Local history of text, images and files with pinned favorites, search and quick paste shortcuts.
 - **Paste as plain text.** One shortcut pastes without fonts, colors or links, and the original stays on the clipboard.
 - **Shelf.** Park files, text and links near your cursor mid drag, then drop them where they belong later.
-- **Finder cut and paste.** ⌘X and ⌘V move files the way you always expected them to.
+- **Finder shortcuts.** ⌘X and ⌘V move files, an optional F2 shortcut renames the selection, and copied images can become PNG files with ⌘V.
 - **Clean URL.** Strips tracking parameters from copied links, on demand or automatically.
 
 ### Everyday tools
@@ -109,8 +109,8 @@ The rest bends the same way: panel sections reorder and hide, the compact layout
 - **Quick panel.** ⌃⌘V opens a small floating palette with your favorite tools one key away.
 - **Quick toggles.** One-click system actions in their own panel tab: switch light and dark mode, empty the Trash, eject every disk, show hidden files, hide desktop icons, lock the screen and more.
 - **Radial menu.** Hold a shortcut, or a spare side mouse button, and a wheel of your favorite actions opens around the pointer: apps, files, links, key combos, media controls and Vorssaint tools, with submenus for more. Point and release to run one.
-- **Screenshot.** Capture an area, a window or the whole screen on a frozen picture. A quick preview can copy, save, delete or open the editor, which adds stickers, annotations, precise crop, redaction, adjustable backgrounds and pinned captures. A QR code in the shot shows its content to copy or open, from the preview and the editor. Optional timer, save folder and 1x export included. Captures can copy themselves to the clipboard, run your favorite action right after the shot, and save into dated subfolders with a file name pattern of your own.
-- **Screen recording.** Record an area, a window or the whole screen with optional system sound and pressed keys. The editor trims, cuts, smooths the pointer, adds click zooms, text and adjustable backgrounds, and saves reusable presets. Copy the finished video directly, copy and delete in one step, or export video and GIF files to the folder you choose.
+- **Screenshot.** Capture an area, a window or the whole screen on a frozen picture, or join a long page or document into one image. A quick preview can copy, save, delete or open the editor, which adds stickers, annotations, precise crop, redaction, adjustable backgrounds and pinned captures. A QR code in the shot shows its content to copy or open, from the preview and the editor. Optional timer, save folder and 1x export included. Captures can copy themselves to the clipboard, run your favorite action right after the shot, save into dated subfolders with a file name pattern of your own, and use separate shortcuts for a whole-screen shot or reopening the latest capture.
+- **Screen recording.** Record an area, a window or the whole screen with optional system sound. The editor trims, cuts, smooths the pointer, adds automatic zooms that can stay with typing after a click, adds text and adjustable backgrounds, and saves reusable presets. Copy the finished video directly, copy and delete in one step, or export video and GIF files to the folder you choose.
 - **Camera preview.** A floating mirror to check how you look before joining a call, one click or shortcut away. Pick the camera when several are connected; it closes as soon as you click away.
 - **Scratchpad.** A floating pad for short-lived text: meeting notes, numbers, fragments on their way somewhere else. It saves as you type, steps aside when you click elsewhere (or stays floating, your call), and can copy everything, export to a file or clear itself after a quiet period.
 - **Copy text from screen.** Select any area and its text is recognized offline, straight onto the clipboard. When the area holds a QR code, its content is shown so you can copy it or open the link.

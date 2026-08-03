@@ -93,6 +93,15 @@ struct ScreenshotFeatureStrings {
     let hintLoupe: String
     let lastRegionToggle: String
     let backdropBlurLabel: String
+    let scrollingCaptureButton: String
+    let scrollingCaptureTitle: String
+    let scrollingCaptureProgressHUD: String
+    let scrollingCaptureHintOff: String
+    let scrollingCaptureHintOn: String
+    let scrollingCaptureTooLongHUD: String
+    let editLastCapture: String
+    let lastCaptureMissing: String
+    let fullScreenShortcutTitle: String
 }
 
 extension FeatureStrings {
@@ -204,7 +213,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Every capture goes to the clipboard as soon as it is taken, ready to paste. Saving a file stays a separate choice.",
         hintLoupe: "Z toggles the loupe",
         lastRegionToggle: "Show the last capture outline",
-        backdropBlurLabel: "Blur"
+        backdropBlurLabel: "Blur",
+        scrollingCaptureButton: "Scrolling capture",
+        scrollingCaptureTitle: "Scrolling screenshot",
+        scrollingCaptureProgressHUD: "Capturing scroll...",
+        scrollingCaptureHintOff: "S toggles scrolling",
+        scrollingCaptureHintOn: "Scrolling on",
+        scrollingCaptureTooLongHUD: "This capture is too long to finish safely",
+        editLastCapture: "Edit latest screenshot",
+        lastCaptureMissing: "Take a screenshot first",
+        fullScreenShortcutTitle: "Capture the whole screen"
     )
 
     static let ptBR = ScreenshotFeatureStrings(
@@ -295,7 +313,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Toda captura vai para a área de transferência assim que é feita, pronta para colar. Salvar um arquivo continua sendo uma escolha à parte.",
         hintLoupe: "Z alterna a lupa",
         lastRegionToggle: "Mostrar o contorno da última captura",
-        backdropBlurLabel: "Desfoque"
+        backdropBlurLabel: "Desfoque",
+        scrollingCaptureButton: "Captura com rolagem",
+        scrollingCaptureTitle: "Captura com rolagem",
+        scrollingCaptureProgressHUD: "Capturando rolagem...",
+        scrollingCaptureHintOff: "S alterna rolagem",
+        scrollingCaptureHintOn: "Rolagem ligada",
+        scrollingCaptureTooLongHUD: "Esta captura é longa demais para terminar com segurança",
+        editLastCapture: "Editar a captura mais recente",
+        lastCaptureMissing: "Faça uma captura de tela primeiro",
+        fullScreenShortcutTitle: "Capturar a tela inteira"
     )
 
     static let tr = ScreenshotFeatureStrings(
@@ -386,7 +413,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Her yakalama alınır alınmaz panoya gider ve yapıştırmaya hazır olur. Dosya olarak kaydetmek ayrı bir seçim olarak kalır.",
         hintLoupe: "Z büyüteci açar/kapatır",
         lastRegionToggle: "Son yakalamanın çerçevesini göster",
-        backdropBlurLabel: "Bulanıklık"
+        backdropBlurLabel: "Bulanıklık",
+        scrollingCaptureButton: "Kaydırmalı yakalama",
+        scrollingCaptureTitle: "Kaydırmalı ekran görüntüsü",
+        scrollingCaptureProgressHUD: "Kaydırma yakalanıyor...",
+        scrollingCaptureHintOff: "S kaydırmayı açar",
+        scrollingCaptureHintOn: "Kaydırma açık",
+        scrollingCaptureTooLongHUD: "Bu yakalama güvenle tamamlanamayacak kadar uzun",
+        editLastCapture: "Son ekran görüntüsünü düzenle",
+        lastCaptureMissing: "Önce bir ekran görüntüsü alın",
+        fullScreenShortcutTitle: "Tüm ekranı yakala"
     )
 
     static let ru = ScreenshotFeatureStrings(
@@ -477,7 +513,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Каждый снимок попадает в буфер обмена сразу после съёмки и готов к вставке. Сохранение файла остаётся отдельным выбором.",
         hintLoupe: "Z включает лупу",
         lastRegionToggle: "Показывать контур последней области",
-        backdropBlurLabel: "Размытие"
+        backdropBlurLabel: "Размытие",
+        scrollingCaptureButton: "Снимок с прокруткой",
+        scrollingCaptureTitle: "Снимок с прокруткой",
+        scrollingCaptureProgressHUD: "Снимаем прокрутку...",
+        scrollingCaptureHintOff: "S включает прокрутку",
+        scrollingCaptureHintOn: "Прокрутка включена",
+        scrollingCaptureTooLongHUD: "Этот снимок слишком длинный для безопасного завершения",
+        editLastCapture: "Редактировать последний снимок",
+        lastCaptureMissing: "Сначала сделайте снимок экрана",
+        fullScreenShortcutTitle: "Снять весь экран"
     )
 
     static let es = ScreenshotFeatureStrings(
@@ -568,7 +613,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Cada captura va al portapapeles en cuanto se toma, lista para pegar. Guardar un archivo sigue siendo una elección aparte.",
         hintLoupe: "Z activa la lupa",
         lastRegionToggle: "Mostrar sombra de la última captura",
-        backdropBlurLabel: "Desenfoque"
+        backdropBlurLabel: "Desenfoque",
+        scrollingCaptureButton: "Captura con desplazamiento",
+        scrollingCaptureTitle: "Captura con desplazamiento",
+        scrollingCaptureProgressHUD: "Capturando desplazamiento...",
+        scrollingCaptureHintOff: "S activa desplazamiento",
+        scrollingCaptureHintOn: "Desplazamiento activo",
+        scrollingCaptureTooLongHUD: "Esta captura es demasiado larga para terminarla con seguridad",
+        editLastCapture: "Editar la captura más reciente",
+        lastCaptureMissing: "Haz una captura de pantalla primero",
+        fullScreenShortcutTitle: "Capturar toda la pantalla"
     )
 
     static let de = ScreenshotFeatureStrings(
@@ -659,7 +713,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Jede Aufnahme landet sofort in der Zwischenablage, bereit zum Einfügen. Das Speichern als Datei bleibt eine eigene Entscheidung.",
         hintLoupe: "Z schaltet die Lupe um",
         lastRegionToggle: "Umriss der letzten Aufnahme anzeigen",
-        backdropBlurLabel: "Unschärfe"
+        backdropBlurLabel: "Unschärfe",
+        scrollingCaptureButton: "Scroll-Aufnahme",
+        scrollingCaptureTitle: "Scroll-Screenshot",
+        scrollingCaptureProgressHUD: "Scroll wird aufgenommen...",
+        scrollingCaptureHintOff: "S schaltet Scrollen um",
+        scrollingCaptureHintOn: "Scrollen aktiv",
+        scrollingCaptureTooLongHUD: "Diese Aufnahme ist zu lang, um sie sicher abzuschließen",
+        editLastCapture: "Letztes Bildschirmfoto bearbeiten",
+        lastCaptureMissing: "Nimm zuerst ein Bildschirmfoto auf",
+        fullScreenShortcutTitle: "Gesamten Bildschirm aufnehmen"
     )
 
     static let fr = ScreenshotFeatureStrings(
@@ -750,7 +813,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Chaque capture va dans le presse-papiers dès qu'elle est prise, prête à être collée. Enregistrer un fichier reste un choix distinct.",
         hintLoupe: "Z active la loupe",
         lastRegionToggle: "Afficher le contour de la dernière capture",
-        backdropBlurLabel: "Flou"
+        backdropBlurLabel: "Flou",
+        scrollingCaptureButton: "Capture avec défilement",
+        scrollingCaptureTitle: "Capture avec défilement",
+        scrollingCaptureProgressHUD: "Capture du défilement...",
+        scrollingCaptureHintOff: "S active le défilement",
+        scrollingCaptureHintOn: "Défilement activé",
+        scrollingCaptureTooLongHUD: "Cette capture est trop longue pour être terminée en toute sécurité",
+        editLastCapture: "Modifier la dernière capture",
+        lastCaptureMissing: "Prenez d'abord une capture d'écran",
+        fullScreenShortcutTitle: "Capturer tout l’écran"
     )
 
     static let it = ScreenshotFeatureStrings(
@@ -841,7 +913,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "Ogni cattura va negli appunti appena viene fatta, pronta da incollare. Salvare un file resta una scelta a parte.",
         hintLoupe: "Z attiva la lente",
         lastRegionToggle: "Mostra il contorno dell'ultima cattura",
-        backdropBlurLabel: "Sfocatura"
+        backdropBlurLabel: "Sfocatura",
+        scrollingCaptureButton: "Cattura con scorrimento",
+        scrollingCaptureTitle: "Screenshot con scorrimento",
+        scrollingCaptureProgressHUD: "Cattura scorrimento...",
+        scrollingCaptureHintOff: "S attiva scorrimento",
+        scrollingCaptureHintOn: "Scorrimento attivo",
+        scrollingCaptureTooLongHUD: "Questa cattura è troppo lunga per essere completata in sicurezza",
+        editLastCapture: "Modifica l'ultima cattura",
+        lastCaptureMissing: "Prima acquisisci un'istantanea",
+        fullScreenShortcutTitle: "Acquisisci l’intero schermo"
     )
 
     static let ja = ScreenshotFeatureStrings(
@@ -932,7 +1013,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "撮影した瞬間にクリップボードへ入り、すぐに貼り付けられます。ファイルとして保存するかどうかは別の選択のままです。",
         hintLoupe: "Zでルーペを切り替え",
         lastRegionToggle: "最後のキャプチャ範囲を表示",
-        backdropBlurLabel: "ぼかし"
+        backdropBlurLabel: "ぼかし",
+        scrollingCaptureButton: "スクロール撮影",
+        scrollingCaptureTitle: "スクロールスクリーンショット",
+        scrollingCaptureProgressHUD: "スクロールを撮影中...",
+        scrollingCaptureHintOff: "Sでスクロール切替",
+        scrollingCaptureHintOn: "スクロール有効",
+        scrollingCaptureTooLongHUD: "このキャプチャは長すぎて安全に完了できません",
+        editLastCapture: "最新のスクリーンショットを編集",
+        lastCaptureMissing: "先にスクリーンショットを撮影してください",
+        fullScreenShortcutTitle: "画面全体をキャプチャ"
     )
 
     static let ko = ScreenshotFeatureStrings(
@@ -1023,7 +1113,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "캡처하는 즉시 클립보드에 담겨 바로 붙여넣을 수 있습니다. 파일로 저장하는 것은 여전히 별도의 선택입니다.",
         hintLoupe: "Z 키로 확대경 전환",
         lastRegionToggle: "마지막 캡처 영역 표시",
-        backdropBlurLabel: "흐림"
+        backdropBlurLabel: "흐림",
+        scrollingCaptureButton: "스크롤 캡처",
+        scrollingCaptureTitle: "스크롤 스크린샷",
+        scrollingCaptureProgressHUD: "스크롤 캡처 중...",
+        scrollingCaptureHintOff: "S로 스크롤 전환",
+        scrollingCaptureHintOn: "스크롤 켜짐",
+        scrollingCaptureTooLongHUD: "이 캡처는 너무 길어 안전하게 완료할 수 없습니다",
+        editLastCapture: "최근 스크린샷 편집",
+        lastCaptureMissing: "먼저 스크린샷을 캡처하세요",
+        fullScreenShortcutTitle: "전체 화면 캡처"
     )
 
     static let zhHans = ScreenshotFeatureStrings(
@@ -1114,7 +1213,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "每次截屏后会立即进入剪贴板，随时可以粘贴。是否保存为文件仍是单独的选择。",
         hintLoupe: "按 Z 切换放大镜",
         lastRegionToggle: "显示上次截图区域轮廓",
-        backdropBlurLabel: "模糊"
+        backdropBlurLabel: "模糊",
+        scrollingCaptureButton: "滚动截图",
+        scrollingCaptureTitle: "滚动截图",
+        scrollingCaptureProgressHUD: "正在捕捉滚动...",
+        scrollingCaptureHintOff: "按 S 切换滚动",
+        scrollingCaptureHintOn: "滚动已开启",
+        scrollingCaptureTooLongHUD: "这次截图过长，无法安全完成",
+        editLastCapture: "编辑最新截屏",
+        lastCaptureMissing: "请先截取一张屏幕图像",
+        fullScreenShortcutTitle: "捕捉整个屏幕"
     )
 
     static let zhTW = ScreenshotFeatureStrings(
@@ -1205,7 +1313,16 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "每次截圖後會立即進入剪貼板，隨時可以貼上。是否儲存為檔案仍是獨立的選擇。",
         hintLoupe: "按 Z 切換放大鏡",
         lastRegionToggle: "顯示上次截圖區域輪廓",
-        backdropBlurLabel: "模糊"
+        backdropBlurLabel: "模糊",
+        scrollingCaptureButton: "捲動截圖",
+        scrollingCaptureTitle: "捲動截圖",
+        scrollingCaptureProgressHUD: "正在擷取捲動...",
+        scrollingCaptureHintOff: "按 S 切換捲動",
+        scrollingCaptureHintOn: "捲動已開啟",
+        scrollingCaptureTooLongHUD: "這次截圖太長，無法安全完成",
+        editLastCapture: "編輯最新截圖",
+        lastCaptureMissing: "請先擷取一張截圖",
+        fullScreenShortcutTitle: "擷取整個螢幕"
     )
 
     static let zhHK = ScreenshotFeatureStrings(
@@ -1296,6 +1413,15 @@ extension ScreenshotFeatureStrings {
         autoCopyCaption: "每次截圖後會立即進入剪貼板，隨時可以貼上。是否儲存為檔案仍是獨立的選擇。",
         hintLoupe: "按 Z 切換放大鏡",
         lastRegionToggle: "顯示上次截圖區域輪廓",
-        backdropBlurLabel: "模糊"
+        backdropBlurLabel: "模糊",
+        scrollingCaptureButton: "捲動截圖",
+        scrollingCaptureTitle: "捲動截圖",
+        scrollingCaptureProgressHUD: "正在擷取捲動...",
+        scrollingCaptureHintOff: "按 S 切換捲動",
+        scrollingCaptureHintOn: "捲動已開啟",
+        scrollingCaptureTooLongHUD: "呢次截圖太長，無法安全完成",
+        editLastCapture: "編輯最新截圖",
+        lastCaptureMissing: "請先擷取一張截圖",
+        fullScreenShortcutTitle: "擷取整個螢幕"
     )
 }

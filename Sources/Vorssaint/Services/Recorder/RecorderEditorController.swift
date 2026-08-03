@@ -48,12 +48,14 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
     private(set) var sourceSize: CGSize = .zero
     private var sourceFrameRate = 60
     private(set) var pointerTrack = RecorderPointerTrack()
-    private(set) var keyboardTrack = RecorderKeyboardTrack()
+    private(set) var typingTrack = RecorderTypingTrack()
     /// True when the recording carries a pointer track at all. Without one the
     /// pointer and zoom controls have nothing to act on and are hidden rather
     /// than shown doing nothing.
     var hasPointerTrack: Bool { !pointerTrack.isEmpty }
-    var hasKeyboardTrack: Bool { !keyboardTrack.isEmpty }
+    private var typingTimes: [Double] {
+        document.zoomsOnTyping ? typingTrack.times : []
+    }
 
     var trim: RecorderSupport.Trim {
         document.trim(duration: duration)
@@ -82,7 +84,7 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
         }
         player.isMuted = !document.keepsSystemAudio
         pointerTrack = RecorderPointerTrack.decoded(try? Data(contentsOf: take.pointerURL))
-        keyboardTrack = RecorderKeyboardTrack.decoded(try? Data(contentsOf: take.keyboardURL))
+        typingTrack = RecorderTypingTrack.decoded(try? Data(contentsOf: take.typingURL))
         loadEditPresets()
         loadBackdropPresets()
         observeTime()
@@ -290,7 +292,6 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
             guard !Task.isCancelled, let self, let item = self.player.currentItem else { return }
             guard let plan = RecorderComposer.makePlan(document: document,
                                                        track: track,
-                                                       keyboard: self.keyboardTrack,
                                                        sourceSize: sourceSize,
                                                        frameRate: frameRate,
                                                        duration: duration) else {
@@ -344,12 +345,16 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
 
     func applyLook(_ look: RecorderEditDocument.Look) {
         document = document.applying(look).restoringAutomaticZooms(
-            clicks: pointerTrack.clicks, duration: duration)
+            clicks: pointerTrack.clicks,
+            typingTimes: typingTimes,
+            duration: duration)
     }
 
     func applyPreset(_ preset: RecorderEditPreset) {
         document = preset.applying(to: document)
-            .restoringAutomaticZooms(clicks: pointerTrack.clicks, duration: duration)
+            .restoringAutomaticZooms(clicks: pointerTrack.clicks,
+                                     typingTimes: typingTimes,
+                                     duration: duration)
             .sanitized(duration: duration)
     }
 
@@ -482,6 +487,7 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
     var canCreateAutomaticZooms: Bool {
         !RecorderTimeline.generatedSegments(
             clicks: pointerTrack.clicks,
+            typingTimes: typingTimes,
             duration: duration,
             amount: document.zoomAmount).isEmpty
     }
@@ -491,8 +497,22 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
         next.zoomEnabled = enabled
         if enabled {
             next = next.restoringAutomaticZooms(clicks: pointerTrack.clicks,
+                                                typingTimes: typingTimes,
                                                 duration: duration)
         }
+        document = next
+    }
+
+    func setTypingZoomEnabled(_ enabled: Bool) {
+        var next = document
+        next.zoomsOnTyping = enabled
+        next.zoomSegments = RecorderTimeline.generatedSegments(
+            clicks: pointerTrack.clicks,
+            typingTimes: enabled ? typingTrack.times : [],
+            duration: duration,
+            amount: RecorderSupport.sanitizedZoomAmount(next.zoomAmount))
+        next.zoomEnabled = true
+        next.zoomsGenerated = true
         document = next
     }
 
@@ -512,6 +532,7 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
         var next = document
         next.zoomSegments = RecorderTimeline.generatedSegments(
             clicks: pointerTrack.clicks,
+            typingTimes: typingTimes,
             duration: duration,
             amount: RecorderSupport.sanitizedZoomAmount(document.zoomAmount))
         next.zoomsGenerated = true
@@ -615,6 +636,7 @@ final class RecorderEditorModel: ObservableObject, BackdropEditing {
         var next = document
         next.zoomSegments = RecorderTimeline.generatedSegments(
             clicks: pointerTrack.clicks,
+            typingTimes: typingTimes,
             duration: duration,
             amount: RecorderSupport.sanitizedZoomAmount(document.zoomAmount))
         next.zoomEnabled = true

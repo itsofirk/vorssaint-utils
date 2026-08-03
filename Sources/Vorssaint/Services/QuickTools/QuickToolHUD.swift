@@ -70,7 +70,6 @@ enum QuickToolHUD {
         }
         .frame(width: 82, height: 82)
         .background(.regularMaterial, in: Circle())
-        .shadow(color: .black.opacity(0.3), radius: 16, y: 7)
         .padding(12)
 
         present(AnyView(content), dismissAfter: 0.92, windowShadow: false)

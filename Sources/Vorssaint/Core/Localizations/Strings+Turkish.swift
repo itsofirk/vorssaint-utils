@@ -893,6 +893,8 @@ extension Strings {
         switcherMinimizedPlacementHidden: "Gizle",
         switcherShowFullscreenWindows: "Tam ekran pencereleri göster",
         shelfFileMissing: "Dosya artık yok",
-        previewSizeSmall: "Küçük"
+        previewSizeSmall: "Küçük",
+        mixerSoundEffectsOutputTitle: "Sistem sesleri",
+        mixerSoundEffectsOutputTooltip: "Uyarıların ve ses efektlerinin çalacağı çıkışı seç"
     )
 }
