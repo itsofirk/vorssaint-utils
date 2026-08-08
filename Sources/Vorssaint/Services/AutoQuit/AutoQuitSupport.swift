@@ -22,6 +22,8 @@ enum AutoQuitCloseSignal: Equatable {
 }
 
 enum AutoQuitSupport {
+    private static let hostBundleIdentifierKey = "CrBundleIdentifier"
+
     /// QWERTY position of the W key — only a fallback for when the event carries
     /// no typed character; the service matches the layout-resolved character
     /// first (key codes are positional: 13 types "z" on AZERTY).
@@ -56,6 +58,40 @@ enum AutoQuitSupport {
         if appIsHidden && !hiddenByCloseRequest { return false }
         if hasKnownMinimizedWindow { return false }
         return !hasUserFacingWindow
+    }
+
+    /// An exception for an installed app also covers UI processes bundled
+    /// inside it. Some apps put their main windows in a nested application
+    /// with a different identifier, even though the user picked the outer app.
+    static func isExcepted(bundleIdentifier: String?,
+                           bundleURL: URL?,
+                           exceptions: [String]) -> Bool {
+        if let bundleIdentifier, exceptions.contains(bundleIdentifier) { return true }
+        guard var url = bundleURL?.standardizedFileURL.deletingLastPathComponent() else { return false }
+
+        while url.path != "/" {
+            if url.pathExtension.caseInsensitiveCompare("app") == .orderedSame,
+               let containingIdentifier = Bundle(url: url)?.bundleIdentifier,
+               exceptions.contains(containingIdentifier) {
+                return true
+            }
+            let parent = url.deletingLastPathComponent()
+            guard parent != url else { break }
+            url = parent
+        }
+        return false
+    }
+
+    /// Some standalone apps depend on a separate host process and declare that
+    /// relationship in their bundle metadata. Quitting the host while one of
+    /// those apps is running would close both from a single window close.
+    static func hasDependentApplication(hostBundleIdentifier: String?,
+                                        applicationBundleURLs: [URL]) -> Bool {
+        guard let hostBundleIdentifier, !hostBundleIdentifier.isEmpty else { return false }
+        return applicationBundleURLs.contains { bundleURL in
+            Bundle(url: bundleURL)?.object(forInfoDictionaryKey: hostBundleIdentifierKey) as? String
+                == hostBundleIdentifier
+        }
     }
 
     static func isCommandW(keyCode: Int64, command: Bool, control: Bool) -> Bool {

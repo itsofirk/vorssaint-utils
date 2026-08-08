@@ -9,6 +9,8 @@ import SwiftUI
 /// the mouse, fading out on its own. Purely visual; never takes focus.
 enum QuickToolHUD {
     private static var panel: NSPanel?
+    private static var scrollingPanel: ScrollingCapturePanel?
+    private static var scrollingModel: ScrollingCaptureHUDModel?
     private static var dismissWork: DispatchWorkItem?
     /// Bumped by every show(). A dismiss whose fade-out was overtaken by a
     /// newer show() must not order the panel out from its completion handler.
@@ -19,6 +21,13 @@ enum QuickToolHUD {
     static var currentWindowNumber: Int? {
         guard let panel, panel.isVisible else { return nil }
         return panel.windowNumber
+    }
+
+    /// The scrolling capture controls, when they are on screen. They belong to
+    /// the capture in progress and must stay out of its own pictures.
+    static var currentScrollingWindowNumber: Int? {
+        guard let scrollingPanel, scrollingPanel.isVisible else { return nil }
+        return scrollingPanel.windowNumber
     }
 
     static func show(icon: String, message: String, swatch: NSColor? = nil) {
@@ -75,6 +84,63 @@ enum QuickToolHUD {
         present(AnyView(content), dismissAfter: 0.92, windowShadow: false)
     }
 
+    /// The scrolling capture stays visible while the person moves the target.
+    /// Its non-activating panel takes key focus only so Return and Escape do
+    /// not leak into the page being captured.
+    static func showScrollingCapture(message: String,
+                                     finishTitle: String,
+                                     cancelTitle: String,
+                                     onFinish: @escaping () -> Void,
+                                     onCancel: @escaping () -> Void) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async {
+                showScrollingCapture(message: message,
+                                     finishTitle: finishTitle,
+                                     cancelTitle: cancelTitle,
+                                     onFinish: onFinish,
+                                     onCancel: onCancel)
+            }
+            return
+        }
+        let model = ScrollingCaptureHUDModel(message: message)
+        scrollingModel = model
+        let content = ScrollingCaptureHUDView(model: model,
+                                              finishTitle: finishTitle,
+                                              cancelTitle: cancelTitle,
+                                              onFinish: onFinish,
+                                              onCancel: onCancel)
+        let host = NSHostingController(rootView: AnyView(content))
+        host.view.layoutSubtreeIfNeeded()
+        let size = host.view.fittingSize
+        let panel = ensureScrollingPanel()
+        panel.contentViewController = host
+        let frame = NSScreen.pointerVisibleFrame
+        panel.setFrame(NSRect(x: frame.midX - size.width / 2,
+                              y: frame.maxY - size.height - 24,
+                              width: size.width,
+                              height: size.height),
+                       display: true)
+        panel.orderFrontRegardless()
+        panel.makeKey()
+    }
+
+    static func updateScrollingCapture(height: Int) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { updateScrollingCapture(height: height) }
+            return
+        }
+        scrollingModel?.height = height
+    }
+
+    static func dismissScrollingCapture() {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { dismissScrollingCapture() }
+            return
+        }
+        scrollingPanel?.orderOut(nil)
+        scrollingModel = nil
+    }
+
     private static func present(_ content: AnyView,
                                 dismissAfter: Double,
                                 windowShadow: Bool = true) {
@@ -120,10 +186,33 @@ enum QuickToolHUD {
 
     private static func ensurePanel() -> NSPanel {
         if let panel { return panel }
+        let panel = makePanel()
+        self.panel = panel
+        return panel
+    }
+
+    private static func ensureScrollingPanel() -> ScrollingCapturePanel {
+        if let scrollingPanel { return scrollingPanel }
+        let panel = ScrollingCapturePanel(contentRect: .zero,
+                                          styleMask: [.borderless, .nonactivatingPanel],
+                                          backing: .buffered,
+                                          defer: false)
+        configure(panel)
+        panel.ignoresMouseEvents = false
+        scrollingPanel = panel
+        return panel
+    }
+
+    private static func makePanel() -> NSPanel {
         let panel = NSPanel(contentRect: .zero,
                             styleMask: [.borderless, .nonactivatingPanel],
                             backing: .buffered,
                             defer: false)
+        configure(panel)
+        return panel
+    }
+
+    private static func configure(_ panel: NSPanel) {
         panel.level = .statusBar
         panel.isOpaque = false
         panel.backgroundColor = .clear
@@ -132,7 +221,55 @@ enum QuickToolHUD {
         panel.hidesOnDeactivate = false
         panel.isReleasedWhenClosed = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
-        self.panel = panel
-        return panel
+    }
+}
+
+/// A non-activating panel that can still own Return and Escape while the
+/// underlying window continues receiving pointer and scrolling events.
+private final class ScrollingCapturePanel: NSPanel {
+    override var canBecomeKey: Bool { true }
+}
+
+private final class ScrollingCaptureHUDModel: ObservableObject {
+    let message: String
+    @Published var height = 0
+
+    init(message: String) {
+        self.message = message
+    }
+}
+
+private struct ScrollingCaptureHUDView: View {
+    @ObservedObject var model: ScrollingCaptureHUDModel
+    let finishTitle: String
+    let cancelTitle: String
+    let onFinish: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "rectangle.stack.fill")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.accentColor)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(model.message)
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(2)
+                Text("\(model.height) px")
+                    .font(.system(size: 10, weight: .medium, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+            Button(cancelTitle, action: onCancel)
+                .controlSize(.small)
+                .keyboardShortcut(.cancelAction)
+            Button(finishTitle, action: onFinish)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .keyboardShortcut(.defaultAction)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 9)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }
