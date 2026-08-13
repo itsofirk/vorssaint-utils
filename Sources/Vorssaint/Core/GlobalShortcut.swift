@@ -248,6 +248,13 @@ struct GlobalShortcut: Equatable, Hashable {
         modifiers.keyCaps + [keyLabel ?? "Key \(keyCode)"]
     }
 
+    /// The shorter way to press a four-modifier shortcut while the Super key
+    /// is running. Shortcuts with any other modifier set have no equivalent.
+    func superKeyAlternative(capsLockLabel: String) -> String? {
+        guard modifiers == .validMask, let key = keyCaps.last else { return nil }
+        return "\(capsLockLabel) + \(key)"
+    }
+
     var carbonKeyCode: UInt32 {
         UInt32(exactly: keyCode) ?? 0
     }
@@ -329,15 +336,16 @@ struct GlobalShortcut: Equatable, Hashable {
     /// signal the switcher's search uses, so dead keys resolve identically.
     func matchesByCharacter(event: CGEvent,
                             tolerating extra: GlobalShortcutModifiers = []) -> Bool {
-        guard let label = keyLabel, label.count == 1 else { return false }
         let actual = GlobalShortcutModifiers(cgFlags: event.flags)
         // The shortcut's own modifiers must be down; Shift or Option on top is
         // tolerated because many layouts need them to produce the character,
-        // and the caller may tolerate more (a session's held modifiers).
+        // and the caller may tolerate more (a session's held modifiers). Asked
+        // before the label, since this runs for every key the tap sees.
         guard actual.intersection(modifiers) == modifiers,
               actual.subtracting(modifiers).subtracting([.shift, .option])
                   .subtracting(extra).isEmpty
         else { return false }
+        guard let label = keyLabel, label.count == 1 else { return false }
         var length = 0
         var chars = [UniChar](repeating: 0, count: 4)
         event.keyboardGetUnicodeString(maxStringLength: chars.count,
@@ -476,16 +484,59 @@ struct GlobalShortcut: Equatable, Hashable {
     /// The character the current keyboard layout prints for a key, uppercased,
     /// so keys the static table does not know (ISO and JIS extras) still get a
     /// real cap. Returns nil for anything unprintable, keeping those invalid.
+    ///
+    /// Answered from the cache: deriving a label asks Text Input Services,
+    /// which traps the process off the main thread, and the Switcher's tap
+    /// asks for one on every key from its own (issue #578).
     private static func layoutKeyLabel(for keyCode: Int64) -> String? {
+        if Thread.isMainThread {
+            let label = derivedLayoutKeyLabel(for: keyCode)
+            layoutLabelLock.withLock { layoutLabels[keyCode] = label }
+            return label
+        }
+        return layoutLabelLock.withLock { layoutLabels[keyCode] }
+    }
+
+    private static let layoutLabelLock = NSLock()
+    private static var layoutLabels: [Int64: String] = [:]
+
+    /// Fills the cache before the Switcher's tap starts or after the layout
+    /// changes. The service owns the observer so it exists only with the tap.
+    static func refreshLayoutLabels() {
+        guard let layoutData = currentLayoutData() else {
+            layoutLabelLock.withLock { layoutLabels.removeAll() }
+            return
+        }
+        var labels: [Int64: String] = [:]
+        for keyCode in UInt16(0)...127 {
+            if let label = derivedLayoutKeyLabel(for: keyCode, layoutData: layoutData) {
+                labels[Int64(keyCode)] = label
+            }
+        }
+        layoutLabelLock.withLock { layoutLabels = labels }
+    }
+
+    private static func derivedLayoutKeyLabel(for keyCode: Int64) -> String? {
         guard let code = UInt16(exactly: keyCode),
+              let layoutData = currentLayoutData()
+        else { return nil }
+        return derivedLayoutKeyLabel(for: code, layoutData: layoutData)
+    }
+
+    private static func currentLayoutData() -> Data? {
+        guard Thread.isMainThread,
               let source = TISCopyCurrentKeyboardLayoutInputSource()?.takeRetainedValue(),
               let layoutData = TISGetInputSourceProperty(source, kTISPropertyUnicodeKeyLayoutData)
         else { return nil }
-        let data = Unmanaged<CFData>.fromOpaque(layoutData).takeUnretainedValue() as Data
+        return Unmanaged<CFData>.fromOpaque(layoutData).takeUnretainedValue() as Data
+    }
+
+    private static func derivedLayoutKeyLabel(for code: UInt16,
+                                              layoutData: Data) -> String? {
         var deadKeyState: UInt32 = 0
         var chars = [UniChar](repeating: 0, count: 4)
         var length = 0
-        let status = data.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> OSStatus in
+        let status = layoutData.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> OSStatus in
             guard let layout = bytes.bindMemory(to: UCKeyboardLayout.self).baseAddress
             else { return OSStatus(paramErr) }
             return UCKeyTranslate(layout, code, UInt16(kUCKeyActionDisplay), 0,
@@ -605,7 +656,7 @@ enum GlobalShortcutRole: CaseIterable, Identifiable {
         case .shelf: return strings.shelfName
         case .switcher: return strings.switcherSection
         case .switcherWindow: return strings.switcherShortcutHintWindows
-        case .clipboard: return "Clipboard"
+        case .clipboard: return FeatureStrings.clipboard(L10n.shared.language).title
         case .soundOutputSwitcher: return strings.soundOutputSwitcherTitle
         case .pastePlain: return strings.pastePlainName
         case .finderRename: return FeatureStrings.finderRename(L10n.shared.language).hubTitle
@@ -632,8 +683,12 @@ enum GlobalShortcutRole: CaseIterable, Identifiable {
     static func conflict(for shortcut: GlobalShortcut,
                          excluding role: GlobalShortcutRole?,
                          isOn: (String) -> Bool = { UserDefaults.standard.bool(forKey: $0) },
-                         isAvailable: (AppFeature) -> Bool = { $0.isAvailable }) -> GlobalShortcutRole? {
-        activeRoles(isOn: isOn, isAvailable: isAvailable).first { candidate in
+                         isAvailable: (AppFeature) -> Bool = { $0.isAvailable },
+                         includeInactive: Bool = false) -> GlobalShortcutRole? {
+        let candidates = includeInactive
+            ? availableRoles(isAvailable: isAvailable)
+            : activeRoles(isOn: isOn, isAvailable: isAvailable)
+        return candidates.first { candidate in
             candidate != role && candidate.savedShortcut == shortcut
         }
     }
@@ -718,6 +773,14 @@ enum GlobalShortcutRole: CaseIterable, Identifiable {
         allCases.filter { role in
             isAvailable(role.feature) && role.requiredEnableKeys.allSatisfy(isOn)
         }
+    }
+
+    /// Every shortcut belonging to an installed feature, including choices
+    /// that are currently switched off but can still be edited and kept for
+    /// later on the central shortcuts page.
+    static func availableRoles(isAvailable: (AppFeature) -> Bool = { $0.isAvailable })
+        -> [GlobalShortcutRole] {
+        allCases.filter { isAvailable($0.feature) }
     }
 }
 

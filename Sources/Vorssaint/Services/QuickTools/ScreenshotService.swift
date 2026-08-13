@@ -67,6 +67,9 @@ final class ScreenshotService: ObservableObject {
     }
 
     private init() {
+        DispatchQueue.global(qos: .utility).async {
+            ScreenshotSupport.removeTemporaryDragDirectories()
+        }
         hotkey.onPress = { [weak self] in self?.capture() }
         fullScreenHotkey.onPress = { [weak self] in self?.captureFullScreen() }
         lastCaptureHotkey.onPress = { [weak self] in self?.openLastCapture() }
@@ -628,6 +631,28 @@ final class ScreenshotService: ObservableObject {
             style: ScreenshotSupport.BackdropStyle(kind: .none, cornerRadius: 0),
             fill: .none,
             downscaleTo1x: downscaleTo1x)
+    }
+
+    /// Vends a full-resolution PNG for dragging into a folder or another app.
+    /// The temporary write begins only when the person starts the drag.
+    static func dragItemProvider(image: CGImage,
+                                 strings: ScreenshotFeatureStrings) -> NSItemProvider? {
+        guard let data = ScreenshotRenderer.pngData(from: image) else {
+            return nil
+        }
+        let name = ScreenshotSupport.fileName(prefix: strings.fileNamePrefix, date: Date())
+        guard let url = try? ScreenshotSupport.temporaryDragFile(data: data, name: name) else {
+            return nil
+        }
+        guard let provider = NSItemProvider(contentsOf: url) else {
+            try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+            return nil
+        }
+        let folder = url.deletingLastPathComponent()
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 60 * 60) {
+            try? FileManager.default.removeItem(at: folder)
+        }
+        return provider
     }
 
     // MARK: - Save location

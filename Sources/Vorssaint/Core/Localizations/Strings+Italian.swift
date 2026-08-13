@@ -166,7 +166,7 @@ extension Strings {
         middleClickTapThreeFingers: "3 dita",
         middleClickTapFourFingers: "4 dita",
         middleClickTapCaption: "Un tocco leggero con quel numero di dita, senza premere, attiva anche il clic centrale. Scorrere non conta mai. Se il tocco a tre dita di macOS è assegnato a Cerca, disattivalo perché i due non si attivino insieme.",
-        quickToolsTab: "Strumenti rapidi",
+        quickToolsTab: "Pannello rapido",
         quickToolShortcutToggle: "Abbreviazione globale",
         ocrName: "Copia testo dallo schermo",
         ocrCaption: "Seleziona un'area dello schermo e il testo riconosciuto viene copiato, pronto da incollare.",
@@ -198,7 +198,7 @@ extension Strings {
         switcherEnableCaption: "Passa tra app e finestre, incluse quelle ridotte a icona e più finestre della stessa app.",
         switcherUsageHint: "Tieni premuta la scorciatoia per spostarti; rilascia per attivare la finestra. Maiuscole o ← torna indietro; W chiude la finestra; Q chiude l'app; Esc annulla.",
         switcherNoWindows: "Nessuna finestra aperta",
-        switcherIconRowMode: "Mostra ⌘Tab con icone grandi",
+        switcherIconRowMode: "Mostra %@ con icone grandi",
         switcherIconRowModeCaption: "Mostra un'icona per app con le anteprime delle sue finestre sopra.",
         switcherSimpleMode: "Selettore app semplice",
         switcherSimpleModeCaption: "Mostra icone delle app e titoli delle finestre, senza anteprime né acquisizione dello schermo dal selettore.",
@@ -768,7 +768,7 @@ extension Strings {
         cleaningNeedsAxBody: "Per bloccare la tastiera in sicurezza, Vorssaint ha bisogno dell'autorizzazione di Accessibilità. Concedila in Impostazioni di Sistema e riprova.",
 
         tabSupport: "Sostieni",
-        shortcutsPageCaption: "Tutte le abbreviazioni globali attive nell'app. Ognuna si configura nella pagina della sua funzione.",
+        shortcutsPageCaption: "Modifica qui tutte le scorciatoie globali delle funzioni installate su questo Mac. Quelle inattive restano salvate ma non si attivano.",
         shortcutsPageTitle: "Abbreviazioni da tastiera",
         settingsSearchPlaceholder: "Cerca nelle impostazioni",
         donateHeading: "Sostieni Vorssaint",
@@ -898,6 +898,13 @@ extension Strings {
         keepAwakeRightClickToggleCaption: "Sostituisce il menu contestuale del clic destro.",
         urlCleanerCustomTitle: "Altri nomi da rimuovere",
         urlCleanerCustomPlaceholder: "ref, origine",
-        urlCleanerCustomCaption: "Separa i nomi dei parametri con virgole. Verranno rimossi da ogni link."
+        urlCleanerCustomCaption: "Separa i nomi dei parametri con virgole. Verranno rimossi da ogni link.",
+        switcherSearchPin: "Blocca la ricerca con S",
+        switcherSearchPinCaption: "S avvia la ricerca e blocca il selettore aperto: niente più caratteri speciali quando la scorciatoia usa ⌥, e una ricerca che inizia con Q o W non chiude più la finestra né l'app per errore.",
+        invertVerticalScroll: "Inverti lo scorrimento verticale",
+        invertHorizontalScroll: "Inverti lo scorrimento orizzontale",
+        switcherShowShortcutHints: "Mostra suggerimenti scorciatoie",
+        switcherShowShortcutHintsCaption: "Mostra le scorciatoie per app e finestre sotto le icone.",
+        uninstallerHomebrewPackageFormat: "%@ verrà rimosso anche da Homebrew."
     )
 }

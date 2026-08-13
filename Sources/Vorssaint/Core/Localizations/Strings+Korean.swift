@@ -166,7 +166,7 @@ extension Strings {
         middleClickTapThreeFingers: "세 손가락",
         middleClickTapFourFingers: "네 손가락",
         middleClickTapCaption: "해당 개수의 손가락으로 가볍게 탭하기만 해도(누르지 않아도) 가운데 클릭이 실행됩니다. 쓸어 넘기기는 포함되지 않습니다. macOS의 세 손가락 탭에 ‘찾아보기’가 지정되어 있다면 두 동작이 함께 실행되지 않도록 끄세요.",
-        quickToolsTab: "빠른 도구",
+        quickToolsTab: "빠른 패널",
         quickToolShortcutToggle: "전역 단축키",
         ocrName: "화면의 텍스트 복사",
         ocrCaption: "화면 영역을 선택하면 인식한 텍스트를 복사해 즉시 붙여넣을 수 있습니다.",
@@ -199,7 +199,7 @@ extension Strings {
         switcherEnableCaption: "앱과 윈도우를 전환합니다. 최소화한 윈도우와 같은 앱의 여러 윈도우도 지원합니다.",
         switcherUsageHint: "단축키를 누른 채 이동하고 놓으면 윈도우가 활성화됩니다. Shift 또는 ←로 뒤로 이동하고, W로 윈도우를 닫고, Q로 앱을 종료하며, Esc로 취소합니다.",
         switcherNoWindows: "열린 윈도우가 없습니다",
-        switcherIconRowMode: "⌘Tab을 큰 아이콘으로 표시",
+        switcherIconRowMode: "%@을 큰 아이콘으로 표시",
         switcherIconRowModeCaption: "앱마다 하나의 아이콘을 표시하고 그 위에 해당 앱의 윈도우 미리보기를 표시합니다.",
         switcherSimpleMode: "간단한 앱 전환기",
         switcherSimpleModeCaption: "미리보기와 전환기의 화면 녹화 기능을 사용하지 않고 앱 아이콘과 윈도우 제목을 표시합니다.",
@@ -769,7 +769,7 @@ extension Strings {
         cleaningNeedsAxBody: "키보드를 안전하게 잠그려면 Vorssaint에 손쉬운 사용 권한이 필요합니다. 시스템 설정에서 허용한 뒤 다시 시도하세요.",
 
         tabSupport: "지원",
-        shortcutsPageCaption: "앱에서 현재 활성화된 전역 단축키 목록입니다. 각 단축키는 해당 기능 페이지에서 설정합니다.",
+        shortcutsPageCaption: "이 Mac에 설치된 기능의 모든 전역 단축키를 여기에서 편집할 수 있습니다. 비활성 단축키도 저장되지만 실행되지는 않습니다.",
         shortcutsPageTitle: "키보드 단축키",
         settingsSearchPlaceholder: "설정 검색",
         donateHeading: "Vorssaint 후원하기",
@@ -899,6 +899,13 @@ extension Strings {
         keepAwakeRightClickToggleCaption: "오른쪽 클릭 메뉴를 대체합니다.",
         urlCleanerCustomTitle: "삭제할 이름 추가",
         urlCleanerCustomPlaceholder: "ref, source",
-        urlCleanerCustomCaption: "매개변수 이름을 쉼표로 구분하세요. 모든 링크에서 삭제됩니다."
+        urlCleanerCustomCaption: "매개변수 이름을 쉼표로 구분하세요. 모든 링크에서 삭제됩니다.",
+        switcherSearchPin: "S로 검색창 고정",
+        switcherSearchPinCaption: "S를 누르면 검색을 시작하고 전환기를 고정합니다. 단축키가 ⌥를 사용할 때 특수 문자가 입력되는 문제와, Q나 W로 시작하는 검색이 창을 닫거나 앱을 종료시키는 문제를 모두 막아줍니다.",
+        invertVerticalScroll: "세로 스크롤 반전",
+        invertHorizontalScroll: "가로 스크롤 반전",
+        switcherShowShortcutHints: "단축키 힌트 보기",
+        switcherShowShortcutHintsCaption: "아이콘 아래에 앱 및 윈도우 단축키를 표시합니다.",
+        uninstallerHomebrewPackageFormat: "%@도 Homebrew에서 제거됩니다."
     )
 }

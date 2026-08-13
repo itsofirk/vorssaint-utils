@@ -1026,9 +1026,11 @@ struct QuickControlsSection: View {
     @ObservedObject private var keyDebounce = KeyboardDebounceService.shared
     @ObservedObject private var middleClick = MiddleClickService.shared
     @ObservedObject private var shelf = ShelfService.shared
-    @AppStorage(DefaultsKey.scrollInverterEnabled) private var scrollEnabled = false
+    @AppStorage(DefaultsKey.scrollInverterEnabled) private var invertVertical = false
+    @AppStorage(DefaultsKey.scrollInverterHorizontalEnabled) private var invertHorizontal = false
     @AppStorage(DefaultsKey.mouseNavigationEnabled) private var mouseNavigationEnabled = false
     @AppStorage(DefaultsKey.switcherEnabled) private var switcherEnabled = true
+    @AppStorage(DefaultsKey.switcherShortcut) private var switcherShortcutStorage = GlobalShortcut.switcherDefault.storageValue
     @AppStorage(DefaultsKey.switcherIconRowMode) private var switcherIconRowMode = false
     @AppStorage(DefaultsKey.switcherSimpleMode) private var switcherSimpleMode = false
     @AppStorage(DefaultsKey.dockPreviewEnabled) private var dockPreviewEnabled = false
@@ -1162,7 +1164,7 @@ struct QuickControlsSection: View {
 
     private func isEnabled(_ item: ControlPanelItem) -> Bool {
         switch item {
-        case .mouseScroll: return scrollEnabled
+        case .mouseScroll: return scrollDirectionEnabled
         case .mouseNavigation: return mouseNavigationEnabled
         case .switcher: return switcherEnabled
         case .cutPaste: return cutPasteEnabled
@@ -1261,16 +1263,17 @@ struct QuickControlsSection: View {
         switch item {
         case .mouseScroll:
             PanelToggleRow(title: l10n.s.invertMouseScroll,
-                           caption: caption(l10n.s.invertMouseScrollCaption, needsAccessibility: scrollEnabled),
+                           caption: caption(l10n.s.invertMouseScrollCaption,
+                                            needsAccessibility: scrollDirectionEnabled),
                            systemImage: "computermouse",
-                           isOn: $scrollEnabled,
+                           isOn: scrollDirectionBinding,
                            isEditing: editing,
                            showsDragHandle: true,
                            visibility: $showScroll,
-                           needsAttention: scrollEnabled && !permissions.accessibility,
+                           needsAttention: scrollDirectionEnabled && !permissions.accessibility,
                            permissionButtonTitle: l10n.s.permissionRequest,
-                           permissionAction: accessibilityPermissionAction(scrollEnabled))
-                .onChange(of: scrollEnabled) { _, enabled in
+                           permissionAction: accessibilityPermissionAction(scrollDirectionEnabled))
+                .onChange(of: scrollDirectionEnabled) { _, enabled in
                     ScrollInverter.shared.syncWithPreferences()
                     requestAccessibilityIfNeeded(enabled)
                 }
@@ -1663,15 +1666,32 @@ struct QuickControlsSection: View {
         }
     }
 
+    private var scrollDirectionEnabled: Bool {
+        invertVertical || invertHorizontal
+    }
+
+    private var scrollDirectionBinding: Binding<Bool> {
+        Binding {
+            scrollDirectionEnabled
+        } set: { enabled in
+            invertVertical = enabled
+            invertHorizontal = enabled
+        }
+    }
+
     private func accessibilityPermissionAction(_ enabled: Bool) -> (() -> Void)? {
         guard enabled, !permissions.accessibility else { return nil }
         return { grantAccessibility() }
     }
 
+    private var switcherShortcutDisplayString: String {
+        (GlobalShortcut(storageValue: switcherShortcutStorage) ?? .switcherDefault).displayString
+    }
+
     private var switcherIconRowOption: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 8) {
-                Text(l10n.s.switcherIconRowMode)
+                Text(String(format: l10n.s.switcherIconRowMode, switcherShortcutDisplayString))
                     .font(.system(size: 10.5, weight: .medium))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -1846,7 +1866,8 @@ struct UtilityActionButton: View {
 }
 
 
-private struct PanelToggleRow: View {
+/// Shared switch row used by Quick Controls and Quick toggles.
+struct PanelToggleRow: View {
     let title: String
     let caption: String
     let systemImage: String
@@ -2209,6 +2230,7 @@ struct KeepAwakeCard: View {
     @ObservedObject private var permissions = Permissions.shared
     @AppStorage(DefaultsKey.defaultDuration) private var defaultDuration: Int = 0
     @AppStorage(DefaultsKey.keepAwakeAutoStart) private var keepAwakeAutoStart = false
+    @AppStorage(DefaultsKey.keepAwakeAllowDisplaySleep) private var keepAwakeAllowDisplaySleep = false
     @AppStorage(DefaultsKey.keepAwakeExternalDisplay) private var keepAwakeExternalDisplay = false
     @AppStorage(DefaultsKey.keepAwakeConnectedToPower) private var keepAwakeConnectedToPower = false
     @AppStorage(DefaultsKey.keepAwakeIconTint) private var keepAwakeIconTint = KeepAwakeIconTint.orange.rawValue
@@ -2295,6 +2317,11 @@ struct KeepAwakeCard: View {
                     KeepAwakeIconPicker(iconValue: $keepAwakeActiveIcon,
                                         tintValue: $keepAwakeIconTint,
                                         compact: true)
+                    compactOptionToggle(
+                        icon: "display",
+                        title: displaySleepStrings.allowDisplaySleep,
+                        isOn: $keepAwakeAllowDisplaySleep
+                    )
                     compactOptionToggle(
                         icon: "play.circle",
                         title: l10n.s.keepAwakeAutoStart,
@@ -2394,6 +2421,7 @@ struct KeepAwakeCard: View {
                 Text(title)
                     .font(.system(size: 11, weight: .medium))
                     .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
                 Toggle("", isOn: isOn)
                     .toggleStyle(.switch)
@@ -2452,6 +2480,10 @@ struct KeepAwakeCard: View {
 
     private var automationStrings: KeepAwakeAutomationStrings {
         FeatureStrings.keepAwakeAutomation(l10n.language)
+    }
+
+    private var displaySleepStrings: KeepAwakeDisplaySleepStrings {
+        FeatureStrings.keepAwakeDisplaySleep(l10n.language)
     }
 
     private var clamshellCaption: String {

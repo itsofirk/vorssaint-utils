@@ -194,17 +194,15 @@ enum CommandBarCatalog {
                               language: AppLanguage,
                               bar: CommandBarFeatureStrings) -> [CommandBarEntry] {
         let hub = FeatureStrings.hub(language)
-        return AppFeature.allCases.compactMap { feature in
-            // Two keys means two different switches; which one a single row
-            // would flip is a guess, and a guess here changes the person's Mac.
-            guard feature.isAvailable, feature.enabledKeys.count == 1,
-                  let key = feature.enabledKeys.first else { return nil }
-            let name = feature.hubTitle(s, hub: hub)
+        func entry(for feature: AppFeature,
+                   key: String,
+                   name: String,
+                   id: String) -> CommandBarEntry {
             let isOn = UserDefaults.standard.bool(forKey: key)
             let needsAccessibility = feature.permissions.contains(.accessibility)
                 && !Permissions.shared.accessibility
             return CommandBarEntry(
-                id: "toggle.\(feature.rawValue)",
+                id: id,
                 title: String(format: isOn ? bar.turnOffFormat : bar.turnOnFormat, name),
                 subtitle: groupTitle(feature.group, hub: hub),
                 keywords: name,
@@ -213,11 +211,34 @@ enum CommandBarCatalog {
                 trouble: needsAccessibility ? .needsPermission : nil,
                 run: { _ in
                     UserDefaults.standard.set(!isOn, forKey: key)
-                    // The feature re-reads its own preferences; writing the key
-                    // alone would leave it switched on and doing nothing.
                     FeatureRuntime.shared.sync([feature])
                     QuickToolHUD.show(icon: feature.symbolName, message: name)
                 })
+        }
+
+        return AppFeature.allCases.flatMap { feature -> [CommandBarEntry] in
+            guard feature.isAvailable else { return [] }
+            if feature == .scrollInverter {
+                return [
+                    entry(for: feature,
+                          key: DefaultsKey.scrollInverterEnabled,
+                          name: s.invertVerticalScroll,
+                          id: "toggle.scrollInverter.vertical"),
+                    entry(for: feature,
+                          key: DefaultsKey.scrollInverterHorizontalEnabled,
+                          name: s.invertHorizontalScroll,
+                          id: "toggle.scrollInverter.horizontal"),
+                ]
+            }
+            // Two keys means two different switches; which one a single row
+            // would flip is a guess, and a guess here changes the person's Mac.
+            guard feature.enabledKeys.count == 1,
+                  let key = feature.enabledKeys.first else { return [] }
+            let name = feature.hubTitle(s, hub: hub)
+            return [entry(for: feature,
+                          key: key,
+                          name: name,
+                          id: "toggle.\(feature.rawValue)")]
         }
     }
 
@@ -624,6 +645,14 @@ enum CommandBarCatalog {
                 shortcut: roleShortcut(.quickLauncher),
                 run: { _ in afterBeat { QuickLauncherService.shared.show() } }))
         }
+        entries.append(CommandBarEntry(
+            id: CommandBarPreferences.emojiBrowserRowID,
+            title: bar.sourceEmoji,
+            subtitle: bar.pageTitle,
+            keywords: bar.kindEmoji,
+            icon: .symbol("face.smiling"),
+            keepsBarOpen: true,
+            run: { _ in CommandBarService.shared.setCategory(.emoji) }))
         let feedback = FeatureStrings.feedback(language)
         entries.append(CommandBarEntry(
             id: "action.feedback.bug",

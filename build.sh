@@ -110,6 +110,7 @@ if (( TEST )); then
         Sources/Vorssaint/Core/FeatureCatalog.swift \
         Sources/Vorssaint/Core/FeaturePresets.swift \
         Sources/Vorssaint/Core/FeatureHubStrings.swift \
+        Sources/Vorssaint/Core/ShortcutSettingsStrings.swift \
         Sources/Vorssaint/Core/SettingsBackupSupport.swift \
         Sources/Vorssaint/Core/BackupStrings.swift \
         Sources/Vorssaint/Core/SnippetStrings.swift \
@@ -117,6 +118,7 @@ if (( TEST )); then
         Sources/Vorssaint/Core/QuickToggleStrings.swift \
         Sources/Vorssaint/Core/ScreenshotStrings.swift \
         Sources/Vorssaint/Core/RecorderStrings.swift \
+        Sources/Vorssaint/Core/RecorderShareStrings.swift \
         Sources/Vorssaint/Core/CameraPreviewStrings.swift \
         Sources/Vorssaint/Core/ScratchpadStrings.swift \
         Sources/Vorssaint/Core/FinderRenameStrings.swift \
@@ -135,6 +137,7 @@ if (( TEST )); then
         Sources/Vorssaint/Services/RadialMenu/RadialMenuSupport.swift \
         Sources/Vorssaint/Services/QuickTools/ScratchpadSupport.swift \
         Sources/Vorssaint/Services/Recorder/RecorderSupport.swift \
+        Sources/Vorssaint/Services/Recorder/RecordingSharingSupport.swift \
         Sources/Vorssaint/Services/Recorder/RecorderTakeStore.swift \
         Sources/Vorssaint/Services/Recorder/RecorderMotion.swift \
         Sources/Vorssaint/Services/Recorder/RecorderPointerTrack.swift \
@@ -321,10 +324,24 @@ xattr -c -r "$STAGE" 2>/dev/null || true
 #      designated requirement across their local builds.
 #   3. Ad-hoc — fresh clone with no identity at all.
 DEVID="$(developer_id_identity)"
+codesign_with_timestamp_retry() {
+    local attempt
+    for attempt in 1 2 3; do
+        if codesign "$@"; then
+            return 0
+        fi
+        if (( attempt < 3 )); then
+            echo "  Developer ID signing failed; retrying ($((attempt + 1))/3)"
+            sleep "$attempt"
+        fi
+    done
+    return 1
+}
+
 codesign_app() {
     local target="$1"
     if [[ -n "$DEVID" ]]; then
-        codesign --force --strip-disallowed-xattrs --options runtime --timestamp \
+        codesign_with_timestamp_retry --force --strip-disallowed-xattrs --options runtime --timestamp \
             --entitlements "$ENTITLEMENTS" --sign "$DEVID" "$target"
     elif security find-identity -p codesigning 2>/dev/null | grep -q "$LEGACY_IDENTITY"; then
         codesign --force --strip-disallowed-xattrs --sign "$LEGACY_IDENTITY" "$target"
@@ -336,7 +353,7 @@ codesign_app() {
 codesign_fan_helper() {
     local target="$1"
     if [[ -n "$DEVID" ]]; then
-        codesign --force --strip-disallowed-xattrs --options runtime --timestamp \
+        codesign_with_timestamp_retry --force --strip-disallowed-xattrs --options runtime --timestamp \
             --identifier "$FAN_HELPER_ID" --sign "$DEVID" "$target"
     elif security find-identity -p codesigning 2>/dev/null | grep -q "$LEGACY_IDENTITY"; then
         codesign --force --strip-disallowed-xattrs --identifier "$FAN_HELPER_ID" \

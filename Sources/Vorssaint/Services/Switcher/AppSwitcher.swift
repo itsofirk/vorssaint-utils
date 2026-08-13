@@ -3,6 +3,7 @@
 
 import AppKit
 import ApplicationServices
+import Carbon.HIToolbox
 import Combine
 import CoreGraphics
 import SwiftUI
@@ -17,8 +18,10 @@ private struct SwitcherSourceContext {
 
 /// The window switcher: a global event tap takes over the configured shortcut,
 /// and while its modifiers are held a non-activating panel cycles through real
-/// windows. Releasing commits, W closes the highlighted window, Q quits its
-/// app, Esc and a click outside cancel. The panel joins every Space and
+/// windows. Releasing commits, W closes the highlighted window, and Q quits
+/// its app. When the optional pin-search preference is enabled, S pins the
+/// search field open (so typing no longer needs the modifier held). Esc and a
+/// click outside cancel. The panel joins every Space and
 /// fullscreen app, so the switcher is available wherever the user is.
 final class AppSwitcher: ObservableObject {
     static let shared = AppSwitcher()
@@ -37,6 +40,12 @@ final class AppSwitcher: ObservableObject {
     @Published private(set) var grid = SwitcherGrid.empty
     @Published private(set) var iconRowLayout = SwitcherIconRowLayout.empty
     @Published private(set) var searchQuery = ""
+    /// True once S pinned the search field open. While set, releasing the
+    /// session's modifier no longer commits — search text can then be typed
+    /// with no modifier held, so a letter never comes out as the modifier's
+    /// special character (⌥ on its own types symbols on layouts like US,
+    /// e.g. ⌥S types "ß").
+    @Published private(set) var isSearchPinned = false
     @Published private(set) var totalWindowCount = 0
 
     /// Single source of truth for "a session is open": the stored value lives
@@ -62,6 +71,8 @@ final class AppSwitcher: ObservableObject {
     private var tapThread: Thread?
     private var shouldStopTapThread = false
     private var pendingStartAfterStop = false
+    /// Alive only while the Switcher's tap needs layout labels off main.
+    private var keyboardLayoutObserver: NSObjectProtocol?
 
     /// The little state the tap thread needs to route an event without
     /// touching the main thread; mutated only under `routeLock`.
@@ -126,6 +137,7 @@ final class AppSwitcher: ObservableObject {
         let enabled = AppFeature.switcher.isAvailable
             && UserDefaults.standard.bool(forKey: DefaultsKey.switcherEnabled)
         if enabled, Permissions.shared.accessibility {
+            startObservingKeyboardLayout()
             installTap()
             // Build the panel and its SwiftUI tree now: the first hosting-view
             // render costs hundreds of milliseconds, far too slow to pay on
@@ -138,6 +150,7 @@ final class AppSwitcher: ObservableObject {
                 WindowPreviewProvider.shared.startWarming()
             }
         } else {
+            stopObservingKeyboardLayout()
             removeTap()
             WindowPreviewProvider.shared.stopWarming()
         }
@@ -159,6 +172,23 @@ final class AppSwitcher: ObservableObject {
     }
 
     // MARK: - Event tap
+
+    private func startObservingKeyboardLayout() {
+        GlobalShortcut.refreshLayoutLabels()
+        guard keyboardLayoutObserver == nil else { return }
+        keyboardLayoutObserver = DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name(kTISNotifySelectedKeyboardInputSourceChanged as String),
+            object: nil,
+            queue: .main
+        ) { _ in GlobalShortcut.refreshLayoutLabels() }
+    }
+
+    private func stopObservingKeyboardLayout() {
+        if let keyboardLayoutObserver {
+            DistributedNotificationCenter.default().removeObserver(keyboardLayoutObserver)
+        }
+        keyboardLayoutObserver = nil
+    }
 
     private func installTap() {
         // Thread creation and the tapThread assignment share one critical
@@ -333,7 +363,7 @@ final class AppSwitcher: ObservableObject {
         case .keyDown:
             return handleKeyDown(event)
         case .flagsChanged:
-            if sessionActive {
+            if sessionActive, !isSearchPinned {
                 if let shortcut = sessionShortcut,
                    !shortcut.requiredModifiersHeld(in: event.flags) {
                     commitSession()
@@ -468,16 +498,19 @@ final class AppSwitcher: ObservableObject {
         default:
             let text = printableSearchText(from: event)
             // The first letter typed is a command: W closes the highlighted
-            // window, Q quits its app. Once a search is under way every key
-            // belongs to the query, so both letters can still be typed.
-            if searchQuery.isEmpty,
-               let action = SwitcherSupport.letterAction(typedCharacter: text, keyCode: keyCode) {
+            // window, Q quits its app, S pins the search field open so typing
+            // no longer needs the session's modifier held. Once a search is
+            // under way (or already pinned) every key belongs to the query,
+            // so all three letters can still be typed.
+            if searchQuery.isEmpty, !isSearchPinned,
+               let action = SwitcherSupport.letterAction(typedCharacter: text, keyCode: keyCode, pinSearchEnabled: searchPinEnabled) {
                 // One window per press: holding the key down must never walk
                 // through the list closing or quitting everything on the way.
                 if event.getIntegerValueField(.keyboardEventAutorepeat) == 0 {
                     switch action {
                     case .closeWindow: closeSelectedWindow()
                     case .quitApp: quitSelectedApp()
+                    case .pinSearch: isSearchPinned = true
                     }
                 }
             } else if let text {
@@ -525,6 +558,7 @@ final class AppSwitcher: ObservableObject {
         sessionItems = list
         totalWindowCount = list.count
         searchQuery = ""
+        isSearchPinned = false
         self.windows = list
         sessionSourceContext = source.map { source in
             SwitcherSourceContext(itemID: source.id,
@@ -915,6 +949,7 @@ final class AppSwitcher: ObservableObject {
         grid = .empty
         iconRowLayout = .empty
         searchQuery = ""
+        isSearchPinned = false
         totalWindowCount = 0
         hoverAnchor = nil
         userNavigated = false
@@ -990,6 +1025,14 @@ final class AppSwitcher: ObservableObject {
         UserDefaults.standard.bool(forKey: DefaultsKey.switcherSimpleMode)
     }
 
+    private var searchPinEnabled: Bool {
+        UserDefaults.standard.bool(forKey: DefaultsKey.switcherSearchPinEnabled)
+    }
+
+    private var showsShortcutHints: Bool {
+        UserDefaults.standard.bool(forKey: DefaultsKey.switcherShowShortcutHints)
+    }
+
     private var usesIconRowLayout: Bool {
         SwitcherSupport.usesIconRowLayout(iconRowMode: iconRowModeEnabled,
                                           simpleMode: simpleModeEnabled)
@@ -1006,7 +1049,8 @@ final class AppSwitcher: ObservableObject {
         iconRowLayout = SwitcherIconRowLayout.compute(
             appCount: appGroups.count,
             selectedWindowCount: selectedAppWindowCount(in: items),
-            screenVisibleFrame: screen.visibleFrame
+            screenVisibleFrame: screen.visibleFrame,
+            showsShortcutHints: showsShortcutHints
         )
     }
 
@@ -1016,7 +1060,8 @@ final class AppSwitcher: ObservableObject {
         iconRowLayout = SwitcherIconRowLayout.compute(
             appCount: appGroups.count,
             selectedWindowCount: selectedAppWindowCount(in: windows),
-            screenVisibleFrame: NSScreen.pointerVisibleFrame
+            screenVisibleFrame: NSScreen.pointerVisibleFrame,
+            showsShortcutHints: showsShortcutHints
         )
     }
 

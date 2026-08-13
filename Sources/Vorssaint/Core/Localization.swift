@@ -1043,6 +1043,13 @@ struct Strings {
     let urlCleanerCustomTitle: String
     let urlCleanerCustomPlaceholder: String
     let urlCleanerCustomCaption: String
+    let switcherSearchPin: String
+    let switcherSearchPinCaption: String
+    let invertVerticalScroll: String
+    let invertHorizontalScroll: String
+    let switcherShowShortcutHints: String
+    let switcherShowShortcutHintsCaption: String
+    let uninstallerHomebrewPackageFormat: String
 }
 
 // MARK: - Português (Brasil)
@@ -1209,7 +1216,7 @@ extension Strings {
         middleClickTapThreeFingers: "3 dedos",
         middleClickTapFourFingers: "4 dedos",
         middleClickTapCaption: "Um toque leve com esse número de dedos, sem pressionar, também dispara o clique do meio. Deslizar nunca conta. Se o toque de três dedos do macOS estiver atribuído à Busca, desative-o para os dois não abrirem juntos.",
-        quickToolsTab: "Ferramentas rápidas",
+        quickToolsTab: "Painel rápido",
         quickToolShortcutToggle: "Atalho global",
         ocrName: "Copiar texto da tela",
         ocrCaption: "Selecione uma área da tela e o texto reconhecido é copiado, pronto para colar.",
@@ -1242,7 +1249,7 @@ extension Strings {
         switcherEnableCaption: "Troque de app ou janela, inclusive janelas minimizadas e várias janelas do mesmo app.",
         switcherUsageHint: "Segure o atalho para navegar; solte para ativar a janela. Shift ou ← volta; W fecha a janela; Q encerra o app; Esc cancela.",
         switcherNoWindows: "Nenhuma janela aberta",
-        switcherIconRowMode: "Mostrar ⌘Tab com ícones grandes",
+        switcherIconRowMode: "Mostrar %@ com ícones grandes",
         switcherIconRowModeCaption: "Mostra um ícone por app com os previews das janelas do app acima.",
         switcherSimpleMode: "Alternador simples",
         switcherSimpleModeCaption: "Mostra ícones de apps e títulos das janelas, sem previews nem captura da tela pelo alternador.",
@@ -1812,7 +1819,7 @@ extension Strings {
         cleaningNeedsAxBody: "Para bloquear o teclado com segurança, o Vorssaint precisa da permissão de Acessibilidade. Conceda em Ajustes do Sistema e tente de novo.",
 
         tabSupport: "Apoiar",
-        shortcutsPageCaption: "Todos os atalhos globais ativos no app agora. Cada um é configurado na página do próprio recurso.",
+        shortcutsPageCaption: "Edite aqui todos os atalhos globais dos recursos instalados neste Mac. Os inativos continuam salvos, mas não funcionam.",
         shortcutsPageTitle: "Atalhos de teclado",
         settingsSearchPlaceholder: "Buscar ajustes",
         donateHeading: "Apoie o Vorssaint",
@@ -1942,7 +1949,14 @@ extension Strings {
         keepAwakeRightClickToggleCaption: "Substitui o menu de contexto do clique com o botão direito.",
         urlCleanerCustomTitle: "Mais nomes para remover",
         urlCleanerCustomPlaceholder: "ref, origem",
-        urlCleanerCustomCaption: "Separe os nomes dos parâmetros com vírgulas. Eles serão removidos de todos os links."
+        urlCleanerCustomCaption: "Separe os nomes dos parâmetros com vírgulas. Eles serão removidos de todos os links.",
+        switcherSearchPin: "Fixar busca com S",
+        switcherSearchPinCaption: "S inicia uma busca e fixa o alternador aberto, assim digitar não produz mais caracteres especiais quando o atalho usa ⌥, e uma busca que comece com Q ou W não fecha a janela nem encerra o app por engano.",
+        invertVerticalScroll: "Inverter rolagem vertical",
+        invertHorizontalScroll: "Inverter rolagem horizontal",
+        switcherShowShortcutHints: "Mostrar dicas de atalhos",
+        switcherShowShortcutHintsCaption: "Exibe os atalhos de apps e janelas abaixo dos ícones.",
+        uninstallerHomebrewPackageFormat: "%@ também será removido do Homebrew."
     )
 }
 
@@ -2110,7 +2124,7 @@ extension Strings {
         middleClickTapThreeFingers: "3 fingers",
         middleClickTapFourFingers: "4 fingers",
         middleClickTapCaption: "A light tap with that many fingers, without pressing, also fires the middle click. Sliding never counts. If the macOS three-finger tap is assigned to Look Up, turn it off so both do not fire together.",
-        quickToolsTab: "Quick tools",
+        quickToolsTab: "Quick panel",
         quickToolShortcutToggle: "Global shortcut",
         ocrName: "Copy text from screen",
         ocrCaption: "Select an area of the screen and the recognized text is copied, ready to paste.",
@@ -2143,7 +2157,7 @@ extension Strings {
         switcherEnableCaption: "Switch between apps and windows, including minimized windows and multiple windows from the same app.",
         switcherUsageHint: "Hold the shortcut to navigate; release to activate the window. Shift or ← goes back; W closes the window; Q quits the app; Esc cancels.",
         switcherNoWindows: "No open windows",
-        switcherIconRowMode: "Show ⌘Tab with large icons",
+        switcherIconRowMode: "Show %@ with large icons",
         switcherIconRowModeCaption: "Shows one icon per app with that app's window previews above it.",
         switcherSimpleMode: "Simple app switcher",
         switcherSimpleModeCaption: "Shows app icons and window titles, without previews or screen capture by the switcher.",
@@ -2713,7 +2727,7 @@ extension Strings {
         cleaningNeedsAxBody: "To lock the keyboard safely, Vorssaint needs Accessibility permission. Grant it in System Settings and try again.",
 
         tabSupport: "Support",
-        shortcutsPageCaption: "Every global shortcut active in the app right now. Each one is configured on its feature's own page.",
+        shortcutsPageCaption: "Edit every global shortcut from the features installed on this Mac. Inactive shortcuts stay saved but do not run.",
         shortcutsPageTitle: "Keyboard shortcuts",
         settingsSearchPlaceholder: "Search settings",
         donateHeading: "Support Vorssaint",
@@ -2843,6 +2857,13 @@ extension Strings {
         keepAwakeRightClickToggleCaption: "Replaces the right-click context menu.",
         urlCleanerCustomTitle: "More names to remove",
         urlCleanerCustomPlaceholder: "ref, source",
-        urlCleanerCustomCaption: "Separate parameter names with commas. They are removed from every link."
+        urlCleanerCustomCaption: "Separate parameter names with commas. They are removed from every link.",
+        switcherSearchPin: "Pin search with S",
+        switcherSearchPinCaption: "S starts a search and pins the switcher open, so typing no longer produces special characters when your shortcut uses ⌥, and a search starting with Q or W no longer closes the window or quits the app by mistake.",
+        invertVerticalScroll: "Invert vertical scrolling",
+        invertHorizontalScroll: "Invert horizontal scrolling",
+        switcherShowShortcutHints: "Show shortcut hints",
+        switcherShowShortcutHintsCaption: "Shows the app and window shortcuts below the icons.",
+        uninstallerHomebrewPackageFormat: "%@ will also be removed from Homebrew."
     )
 }

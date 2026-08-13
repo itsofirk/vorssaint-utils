@@ -4,16 +4,66 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [3.3.1]
+## [3.3.2]
 
 ### Summary
-Vorssaint 3.3.1 adds editable recording audio, one-click app installs, Fan Control
-and smarter window tools. App updates, captures, cleaning, app removal and the menu
-bar panel are more reliable, and Quit on close better protects open apps.
+Vorssaint 3.3.2 opens the Command Bar immediately, adds a direct Emoji shortcut
+and prevents Switcher crashes, restores minimized windows and avoids lost audio.
+It also corrects power readings, app removal and updates, while improving feature
+setup, Fan Control, Dock Preview and keyboard controls.
+
+### Added
+- Emoji can open directly from a shortcut assigned to its Command Bar row.
+  Thanks to @MaximilianMauroner.
+
+### Changed
+- App Updates now searches more places on your Mac and lets each source be turned
+  on or off. Thanks to @ruvelro.
+- Installed Features rows open their Settings page and highlight the relevant
+  controls. Thanks to @dorlugasigal.
+- Cleaning and the Uninstaller now explain how to grant Full Disk Access and
+  that the app must reopen. Thanks to @PathGao.
+- Quit on close exceptions are no longer editable while the feature is off, since
+  nothing reads them there. Thanks to @PathGao.
+- Showing Clipboard in the panel now sits on its own in Settings, since it keeps
+  working while history capture is off. Thanks to @PathGao.
+- The Command Bar now accepts Control-P and Control-N to move through results.
+  Thanks to @theafox.
+
+### Fixed
+- The Command Bar now appears immediately while its results finish loading.
+  Thanks to @MaximilianMauroner.
+- App Updates no longer offers store updates that belong to a different app.
+  Thanks to @PathGao.
+- The App Switcher now shows its configured shortcut in the large icon mode label.
+  Thanks to @liuxxxu.
+- The App Switcher now restores minimized windows when selected.
+- The app no longer quits while typing when the Switcher's Windows shortcut uses a
+  key whose label comes from the keyboard layout. Thanks to @eioz.
+- The Super key now works when Caps Lock is set to do nothing.
+- Dock Preview controls no longer show an oversized blue effect when focused or
+  hovered.
+- The Volume Mixer now restores sound if an app's volume adjustment stops
+  working, instead of leaving it silent until Vorssaint quits.
+- System power no longer mirrors the adapter reading when its own sensor is
+  unavailable.
+- The Uninstaller now offers to remove the Homebrew package with an app it manages.
+  Thanks to @MineraleYT.
+- Fan Control can now request its required approval instead of appearing
+  unavailable before its first setup.
+
+## [3.3.1] - 2026-08-09
+
+### Summary
+Vorssaint 3.3.1 adds editable recording audio, temporary recording links, one-click app installs,
+Fan Control and more configurable window tools. It also improves Settings backups, Keep Awake,
+input controls, the menu bar, Switcher, displays, app management, capture, the file shelf and cleaning.
 
 ### Added
 - Screen recordings can capture Mac sound and microphone separately. Choose them while
   selecting, then adjust or remove each track in the editor.
+- Finished recordings can create 1-hour or 6-hour links after local compression to under
+  100 MB. Disable under Screen recording.
 - A mounted disk image with one app can install it into Applications, eject itself and
   move its download to the Trash. Off by default in Features.
 - A configurable shortcut opens a copied image directly in the screenshot editor.
@@ -29,9 +79,19 @@ bar panel are more reliable, and Quit on close better protects open apps.
   Thanks to @PathGao.
 
 ### Changed
+- The App Switcher can hide the shortcut hints below its large icon row.
+  Under Switcher.
+- Screenshot previews can be dragged directly into folders or other apps as
+  full-resolution PNG files.
+- Mouse wheel direction can now be inverted separately for vertical and horizontal
+  scrolling, including horizontal scrolling with Shift. Thanks to @Jadens-arc.
+- Keyboard Shortcuts now groups installed features, shows which shortcuts are active
+  and edits them in place, including Super key alternatives.
+- App Switcher search can stay open after pressing S, letting you release the shortcut
+  while typing. Off by default under Switcher. Thanks to @liuxxxu.
 - Dock Preview shows slightly larger thumbnails and gives every window title a clear,
   prominent line beneath its preview.
-- Display controls can turn the keyboard light on or off from Settings or the menu bar
+- Quick toggles can turn the keyboard light on or off from Settings or the menu bar
   panel.
 - Simplified Chinese wording now follows system terms and uses native punctuation
   throughout. Thanks to @xueyang-dev.
@@ -48,6 +108,8 @@ bar panel are more reliable, and Quit on close better protects open apps.
   Under Monitor. Thanks to @WazZro.
 - Mouse feature exceptions can now choose apps from anywhere on the Mac.
   Thanks to @kyteidev.
+- The radial menu can now open from any extra mouse button, not only Back and Forward.
+  Thanks to @MineraleYT.
 - The optional Fan Control beta shows live fan speed in the panel and menu bar.
   It can cool at maximum for 15 minutes, then returns to automatic control.
 - Window Layout can move the active window to the previous display, with an optional
@@ -56,6 +118,8 @@ bar panel are more reliable, and Quit on close better protects open apps.
   shortcut. Thanks to @UnbrokenMango21.
 - The screenshot preview can stay near the capture or appear in any screen corner.
   Under Screenshot. Thanks to @lmilojevicc.
+- Keep Awake can let displays sleep while the Mac stays awake.
+  Under Energy and Options. Thanks to @wenujacodes.
 - Keep Awake can optionally toggle with a right click on the menu bar icon.
   Under Energy. Thanks to @yspreen.
 - The window shortcut now opens the switcher for the app in front, without
@@ -68,9 +132,17 @@ bar panel are more reliable, and Quit on close better protects open apps.
   searchable, reusable and clearable when new capture is off. Thanks to @PathGao.
 
 ### Fixed
+- The Shelf drop zone now disappears after a drag finishes in another app.
+- The menu bar panel now closes when you press Escape.
+- The App Switcher can change windows while the screenshot or screen recording editor is open.
+- Keyboard input stays responsive in demanding apps when file shortcuts, text
+  snippets or Super key are enabled.
+- Quick panel is now named consistently in Settings. Thanks to @lgfmartins.
+- Newly connected monitors now appear promptly in Displays while their brightness
+  controls finish getting ready.
 - Quit on close now keeps browser-hosted apps open while their window remains.
   Thanks to @ChaotikTiger.
-- App updates no longer lists command-line packages or records left behind after
+- App update checks no longer list command-line packages or records left behind after
   their apps have been removed.
 - The App Switcher opens quickly when apps run many helper processes. Clicking another
   app now cancels the switch cleanly.
@@ -96,6 +168,10 @@ bar panel are more reliable, and Quit on close better protects open apps.
 - The System panel no longer shows battery readings on Macs without a battery.
 - The package manager page and Settings sidebar now keep their tops visible and
   scroll normally.
+- Package manager actions now stop cleanly if an underlying command becomes
+  unresponsive. Thanks to @PathGao.
+- Settings backup imports now reject values of the wrong type instead of applying
+  them to unrelated options. Thanks to @PathGao.
 - Apps listed under Apps to leave alone now also keep scrolling they generate
   themselves.
 - Dock Preview cards now leave your current app in front while you browse.

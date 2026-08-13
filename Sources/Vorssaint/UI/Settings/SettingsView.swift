@@ -4,19 +4,6 @@
 import AppKit
 import SwiftUI
 
-/// One entry in the Settings sidebar. New features add a case here and a row in
-/// the Features section, so every feature gets its own page.
-/// Selects the visible Settings page; the menu bar uses it to open Settings
-/// directly on a specific page.
-final class SettingsRouter: ObservableObject {
-    static let shared = SettingsRouter()
-    @Published var page: SettingsPage = .general
-    /// One-shot hint for the Cleaner page's tool switcher, so a panel surface
-    /// can land directly on a specific tool. Consumed and cleared on arrival.
-    @Published var cleanerTool: String?
-    private init() {}
-}
-
 /// System-Settings-style window: a sidebar of pages on the left, the selected
 /// page on the right. Scales cleanly as features are added, and gives each
 /// feature a page of its own with room for examples and advanced options.
@@ -37,6 +24,7 @@ struct SettingsView: View {
                 .navigationSplitViewColumnWidth(min: 198, ideal: 210, max: 240)
         } detail: {
             detail
+                .settingsSectionFocus(for: router.page)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .navigationSplitViewStyle(.balanced)
@@ -203,6 +191,7 @@ struct GeneralSettings: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .settingsSectionAnchor(.panelConfiguration)
             if AppFeature.keepAwake.isAvailable {
                 Section(l10n.s.globalHotkeySection) {
                     Toggle(l10n.s.hotkeyToggle, isOn: $hotkeyEnabled)
@@ -248,6 +237,7 @@ struct GeneralSettings: View {
                     }
                     SettingsCaptionText(l10n.s.musicBlockCaption)
                 }
+                .settingsSectionAnchor(.musicBlocking)
             }
             Section(feedbackStrings.sectionTitle) {
                 Button {
@@ -387,6 +377,7 @@ struct EnergySettings: View {
     @AppStorage(DefaultsKey.batteryLimit) private var batteryLimit = 10
     @AppStorage(DefaultsKey.keepAwakeAutoStart) private var keepAwakeAutoStart = false
     @AppStorage(DefaultsKey.keepAwakeRightClickToggle) private var keepAwakeRightClickToggle = false
+    @AppStorage(DefaultsKey.keepAwakeAllowDisplaySleep) private var keepAwakeAllowDisplaySleep = false
     @AppStorage(DefaultsKey.showCountdown) private var showCountdown = false
     @AppStorage(DefaultsKey.keepAwakeIconTint) private var keepAwakeIconTint = KeepAwakeIconTint.orange.rawValue
     @AppStorage(DefaultsKey.keepAwakeActiveIcon) private var keepAwakeActiveIcon = KeepAwakeActiveIcon.vorssaint.rawValue
@@ -416,7 +407,11 @@ struct EnergySettings: View {
                     // with the session options. Under the General page's menu
                     // bar section the label gave no clue which time it meant.
                     Toggle(l10n.s.showCountdown, isOn: $showCountdown)
+                    SettingsToggleWithCaption(title: displaySleepStrings.allowDisplaySleep,
+                                              caption: displaySleepStrings.allowDisplaySleepCaption,
+                                              isOn: $keepAwakeAllowDisplaySleep)
                 }
+                .settingsSectionAnchor(.keepAwake)
                 Section(automationStrings.automationSection) {
                     SettingsCaptionText(automationStrings.automationCaption)
                     KeepAwakeAutomationEditor()
@@ -486,14 +481,6 @@ struct EnergySettings: View {
                             SettingsCaptionText(displayControlFailureText(failure, strings: strings))
                                 .foregroundStyle(.red)
                         }
-                        if brightness.keyboardLightEnabled != nil {
-                            Toggle(isOn: Binding(
-                                get: { brightness.keyboardLightEnabled ?? false },
-                                set: { brightness.setKeyboardLightEnabled($0) }
-                            )) {
-                                Label(strings.keyboardLight, systemImage: "keyboard")
-                            }
-                        }
                         SettingsToggleWithCaption(title: strings.keysToggle,
                                                   caption: strings.keysCaption,
                                                   isOn: $brightnessKeysEnabled)
@@ -517,6 +504,7 @@ struct EnergySettings: View {
                         SettingsCaptionText(strings.externalCaption)
                     }
                 }
+                .settingsSectionAnchor(.brightness)
             }
             if AppFeature.extraBrightness.isAvailable {
                 Section(l10n.s.extraBrightnessName) {
@@ -540,6 +528,7 @@ struct EnergySettings: View {
                         SettingsCaptionText(l10n.s.extraBrightnessUnsupported)
                     }
                 }
+                .settingsSectionAnchor(.extraBrightness)
             }
         }
         .formStyle(.grouped)
@@ -600,6 +589,10 @@ struct EnergySettings: View {
     private var automationStrings: KeepAwakeAutomationStrings {
         FeatureStrings.keepAwakeAutomation(l10n.language)
     }
+
+    private var displaySleepStrings: KeepAwakeDisplaySleepStrings {
+        FeatureStrings.keepAwakeDisplaySleep(l10n.language)
+    }
 }
 
 // MARK: - Mouse
@@ -612,7 +605,8 @@ struct MouseSettings: View {
     @ObservedObject private var smoothScroll = SmoothScrollService.shared
     @ObservedObject private var mouseNavigation = MouseNavigationService.shared
     @ObservedObject private var middleClick = MiddleClickService.shared
-    @AppStorage(DefaultsKey.scrollInverterEnabled) private var inverterEnabled = false
+    @AppStorage(DefaultsKey.scrollInverterEnabled) private var invertVertical = false
+    @AppStorage(DefaultsKey.scrollInverterHorizontalEnabled) private var invertHorizontal = false
     @AppStorage(DefaultsKey.smoothScrollEnabled) private var smoothScrollEnabled = false
     @AppStorage(DefaultsKey.smoothScrollStep) private var smoothScrollStep = SmoothScrollSupport.defaultStep
     @AppStorage(DefaultsKey.mouseNavigationEnabled) private var mouseNavigationEnabled = false
@@ -624,11 +618,15 @@ struct MouseSettings: View {
         Form {
             if AppFeature.scrollInverter.isAvailable {
                 Section(l10n.s.scrollSection) {
-                    Toggle(l10n.s.invertMouseScroll, isOn: $inverterEnabled)
-                        .onChange(of: inverterEnabled) { _, _ in
+                    Toggle(l10n.s.invertVerticalScroll, isOn: $invertVertical)
+                        .onChange(of: invertVertical) { _, _ in
                             ScrollInverter.shared.syncWithPreferences()
                         }
-                    if inverterEnabled, inverter.isRunning {
+                    Toggle(l10n.s.invertHorizontalScroll, isOn: $invertHorizontal)
+                        .onChange(of: invertHorizontal) { _, _ in
+                            ScrollInverter.shared.syncWithPreferences()
+                        }
+                    if scrollDirectionEnabled, inverter.isRunning {
                         HStack(spacing: 6) {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
@@ -637,16 +635,14 @@ struct MouseSettings: View {
                                 .foregroundStyle(.green)
                         }
                     }
-                    Text(l10n.s.invertMouseScrollCaption)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                     Text(l10n.s.scrollTrackpadNote)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    if inverterEnabled {
+                    if scrollDirectionEnabled {
                         MouseExceptionsList(scope: .scrollDirection)
                     }
                 }
+                .settingsSectionAnchor(.scrollDirection)
             }
             if AppFeature.smoothScroll.isAvailable {
                 Section(l10n.s.smoothScrollName) {
@@ -672,6 +668,7 @@ struct MouseSettings: View {
                         MouseExceptionsList(scope: .smoothScroll)
                     }
                 }
+                .settingsSectionAnchor(.smoothScroll)
             }
             if AppFeature.mouseNavigation.isAvailable {
                 Section(l10n.s.mouseNavigationSection) {
@@ -691,6 +688,7 @@ struct MouseSettings: View {
                         MouseExceptionsList(scope: .navigation)
                     }
                 }
+                .settingsSectionAnchor(.mouseNavigation)
             }
             if AppFeature.mouseButtonShortcuts.isAvailable {
                 MouseButtonShortcutsSection()
@@ -726,6 +724,7 @@ struct MouseSettings: View {
                         MouseExceptionsList(scope: .middleClick)
                     }
                 }
+                .settingsSectionAnchor(.middleClick)
             }
             if accessibilityNoteVisible {
                 Section(l10n.s.permissionRequired) {
@@ -742,12 +741,16 @@ struct MouseSettings: View {
     /// Only features that are on AND still available can ask for the
     /// permission note; a hub-disabled one no longer needs anything.
     private var accessibilityNoteVisible: Bool {
-        let anyEngaged = (inverterEnabled && AppFeature.scrollInverter.isAvailable)
+        let anyEngaged = (scrollDirectionEnabled && AppFeature.scrollInverter.isAvailable)
             || (smoothScrollEnabled && AppFeature.smoothScroll.isAvailable)
             || (mouseNavigationEnabled && AppFeature.mouseNavigation.isAvailable)
             || (mouseButtonShortcutsEnabled && AppFeature.mouseButtonShortcuts.isAvailable)
             || (middleClickEnabled && AppFeature.middleClick.isAvailable)
         return anyEngaged && !permissions.accessibility
+    }
+
+    private var scrollDirectionEnabled: Bool {
+        invertVertical || invertHorizontal
     }
 
     private var smoothScrollStepBinding: Binding<Double> {
@@ -766,6 +769,7 @@ struct SwitcherSettings: View {
     @ObservedObject private var permissions = Permissions.shared
     @ObservedObject private var dockPreview = DockPreviewService.shared
     @AppStorage(DefaultsKey.switcherEnabled) private var switcherEnabled = true
+    @AppStorage(DefaultsKey.switcherShortcut) private var switcherShortcutStorage = GlobalShortcut.switcherDefault.storageValue
     @AppStorage(DefaultsKey.switcherIconRowMode) private var switcherIconRowMode = false
     @AppStorage(DefaultsKey.switcherSimpleMode) private var switcherSimpleMode = false
     @AppStorage(DefaultsKey.switcherMergeTabs) private var switcherMergeTabs = false
@@ -773,6 +777,8 @@ struct SwitcherSettings: View {
     @AppStorage(DefaultsKey.switcherMinimizedPlacement) private var switcherMinimizedPlacement = WindowSwitchMinimizedPlacement.normal.rawValue
     @AppStorage(DefaultsKey.switcherShowFullscreenWindows) private var switcherShowFullscreenWindows = true
     @AppStorage(DefaultsKey.switcherCurrentSpaceOnly) private var switcherCurrentSpaceOnly = false
+    @AppStorage(DefaultsKey.switcherSearchPinEnabled) private var switcherSearchPinEnabled = false
+    @AppStorage(DefaultsKey.switcherShowShortcutHints) private var switcherShowShortcutHints = true
     @AppStorage(DefaultsKey.dockPreviewEnabled) private var dockPreviewEnabled = false
     @AppStorage(DefaultsKey.dockPreviewBackgroundOpacity) private var dockPreviewBackgroundOpacity = 1.0
     @AppStorage(DefaultsKey.dockClickMinimize) private var dockClickMinimize = false
@@ -782,6 +788,9 @@ struct SwitcherSettings: View {
 
     private var switcherEngaged: Bool { switcherEnabled && AppFeature.switcher.isAvailable }
     private var dockPreviewEngaged: Bool { dockPreviewEnabled && AppFeature.dockPreview.isAvailable }
+    private var switcherShortcutDisplayString: String {
+        (GlobalShortcut(storageValue: switcherShortcutStorage) ?? .switcherDefault).displayString
+    }
 
     var body: some View {
         Form {
@@ -812,6 +821,12 @@ struct SwitcherSettings: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
+                    Toggle(l10n.s.switcherSearchPin, isOn: $switcherSearchPinEnabled)
+                        .disabled(!switcherEnabled)
+                    Text(l10n.s.switcherSearchPinCaption)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
                     Toggle(l10n.s.switcherSimpleMode, isOn: $switcherSimpleMode)
                         .disabled(!switcherEnabled)
                         .onChange(of: switcherSimpleMode) { _, _ in
@@ -821,7 +836,8 @@ struct SwitcherSettings: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    Toggle(l10n.s.switcherIconRowMode, isOn: $switcherIconRowMode)
+                    Toggle(String(format: l10n.s.switcherIconRowMode, switcherShortcutDisplayString),
+                           isOn: $switcherIconRowMode)
                         .disabled(!switcherEnabled || switcherSimpleMode)
                         .onChange(of: switcherIconRowMode) { _, _ in
                             AppSwitcher.shared.syncWithPreferences()
@@ -829,6 +845,15 @@ struct SwitcherSettings: View {
                     Text(l10n.s.switcherIconRowModeCaption)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+
+                    if switcherSimpleMode || switcherIconRowMode {
+                        Toggle(l10n.s.switcherShowShortcutHints,
+                               isOn: $switcherShowShortcutHints)
+                            .disabled(!switcherEnabled)
+                        Text(l10n.s.switcherShowShortcutHintsCaption)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
                     Toggle(l10n.s.switcherMergeTabs, isOn: $switcherMergeTabs)
                         .disabled(!switcherEnabled)
@@ -869,6 +894,7 @@ struct SwitcherSettings: View {
                         .foregroundStyle(.secondary)
                     SwitcherAppRulesList()
                 }
+                .settingsSectionAnchor(.switcher)
             }
             if AppFeature.dockPreview.isAvailable || AppFeature.dockClick.isAvailable {
                 Section {
@@ -922,6 +948,7 @@ struct SwitcherSettings: View {
                 } header: {
                     Text(l10n.s.dockPreviewName)
                 }
+                .settingsSectionAnchor(.dock)
             }
             if AppFeature.switcher.isAvailable || AppFeature.dockPreview.isAvailable {
                 Section {
